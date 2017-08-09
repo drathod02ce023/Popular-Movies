@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+     <string name="error_message">
+        An error has occurred. Please try again.
+    </string>
+
+    <!--Menu Section-->
+    <string name="menu_sort_popular">SortByPopularity</string>
+    <string name="menu_sort_rating">SortByRatings</string>
+
+</resources>
