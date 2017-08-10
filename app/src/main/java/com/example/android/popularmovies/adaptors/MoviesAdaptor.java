@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.models.Movie;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 /**
  * Created by dhaval on 2017/08/09.
@@ -16,10 +19,11 @@ import com.squareup.picasso.Picasso;
 
 public class MoviesAdaptor extends RecyclerView.Adapter<MoviesAdaptor.MoviesViewHolder> {
 
-    private String[] posterArray;
+    private List<Movie> lstMovies;
+    private Context context;
 
-    public MoviesAdaptor(String[] posterArray) {
-        this.posterArray = posterArray;
+    public MoviesAdaptor(Context context) {
+        this.context = context;
     }
 
     /**
@@ -30,7 +34,6 @@ public class MoviesAdaptor extends RecyclerView.Adapter<MoviesAdaptor.MoviesView
      */
     @Override
     public MoviesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
         int layoutId = R.layout.movie_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
@@ -45,8 +48,10 @@ public class MoviesAdaptor extends RecyclerView.Adapter<MoviesAdaptor.MoviesView
      */
     @Override
     public void onBindViewHolder(MoviesViewHolder holder, int position) {
-        String posterUrl = posterArray[position];
-        Picasso.with(holder.imgPoster.getContext()).load(posterUrl).into(holder.imgPoster);
+        Movie movie = lstMovies.get(position);
+        String posterPath = movie.getPosterPath();
+        String fullPosterPath = ""; //TODO
+        Picasso.with(context).load(fullPosterPath).into(holder.imgPoster);
     }
 
     /**
@@ -55,8 +60,8 @@ public class MoviesAdaptor extends RecyclerView.Adapter<MoviesAdaptor.MoviesView
      */
     @Override
     public int getItemCount() {
-        if(posterArray != null) {
-            return posterArray.length;
+        if(lstMovies != null) {
+            return lstMovies.size();
         }
         return 0;
     }
@@ -74,10 +79,10 @@ public class MoviesAdaptor extends RecyclerView.Adapter<MoviesAdaptor.MoviesView
 
     /**
      * This method is to set/change adaptor data and notify adaptor about the same.
-     * @param p_PosterArray
+     * @param lstMovies
      */
-    public void setData(String[] p_PosterArray){
-        posterArray = p_PosterArray;
+    public void setData(List<Movie> lstMovies){
+        this.lstMovies = lstMovies;
         notifyDataSetChanged();
     }
 
