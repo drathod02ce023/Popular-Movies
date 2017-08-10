@@ -74,5 +74,8 @@ public class Movie {
         ReleaseDate = releaseDate;
     }
 
-
+    @Override
+    public String toString() {
+        return "OriginalTitle : " +getOriginalTitle();
+    }
 }

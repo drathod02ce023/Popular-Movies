@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.models.Movie;
+import com.example.android.popularmovies.utility.MoviesDBUtili;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -21,9 +22,12 @@ public class MoviesAdaptor extends RecyclerView.Adapter<MoviesAdaptor.MoviesView
 
     private List<Movie> lstMovies;
     private Context context;
+    private MovieOnClickListenr mMovieOnClickListner;
 
-    public MoviesAdaptor(Context context) {
+    public MoviesAdaptor(Context context,MovieOnClickListenr movieOnClickListenr ) {
+
         this.context = context;
+        this.mMovieOnClickListner = movieOnClickListenr;
     }
 
     /**
@@ -50,7 +54,7 @@ public class MoviesAdaptor extends RecyclerView.Adapter<MoviesAdaptor.MoviesView
     public void onBindViewHolder(MoviesViewHolder holder, int position) {
         Movie movie = lstMovies.get(position);
         String posterPath = movie.getPosterPath();
-        String fullPosterPath = ""; //TODO
+        String fullPosterPath = MoviesDBUtili.GetPosterURL(posterPath);
         Picasso.with(context).load(fullPosterPath).into(holder.imgPoster);
     }
 
@@ -69,12 +73,26 @@ public class MoviesAdaptor extends RecyclerView.Adapter<MoviesAdaptor.MoviesView
     /**
      * ViewHolder Class
      */
-    public class MoviesViewHolder extends RecyclerView.ViewHolder{
+    public class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView imgPoster;
         public MoviesViewHolder(View itemView) {
             super(itemView);
             imgPoster = (ImageView)itemView.findViewById(R.id.imgPoster);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            Movie movie = lstMovies.get(getAdapterPosition());
+            mMovieOnClickListner.onMovieClickEvent(movie);
+        }
+    }
+
+    /**
+     * Interface to implement click event of movie poster.
+     */
+    public interface MovieOnClickListenr{
+        void onMovieClickEvent(Movie movie);
     }
 
     /**

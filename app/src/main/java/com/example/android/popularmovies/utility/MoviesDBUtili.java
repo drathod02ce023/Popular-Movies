@@ -1,14 +1,20 @@
 package com.example.android.popularmovies.utility;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.example.android.popularmovies.models.Movie;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,6 +35,7 @@ public class MoviesDBUtili {
     //URL
     private static final String POPULAR_MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
     private static final String TOPRATED_MOVIES_URL = "https://api.themoviedb.org/3/movie/top_rated";
+    private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185/";
 
     //API Key
     private static final String APIKEY = "2072aa286a42827354ab00a6d0fd73fc";
@@ -59,16 +66,23 @@ public class MoviesDBUtili {
     public static List<Movie> jsonToMoviesList(String jsondata){
         List<Movie> lstMovies = null;
         Gson gson = new Gson();
-        lstMovies = Arrays.asList(gson.fromJson(jsondata, Movie[].class));
+        Type listType = new TypeToken<List<Movie>>(){}.getType();
+        JsonElement jelement = new JsonParser().parse(jsondata);
+        JsonObject jobject = jelement.getAsJsonObject();
+        JsonArray array = jobject.getAsJsonArray("results");
+        try{
+            lstMovies = gson.fromJson(array, listType);
+        }catch (Exception ex){
+            Log.e(TAG,ex.getMessage());
+        }
         return lstMovies;
     }
 
     /**
-     * Get movies sorted by @param sortby
-     * @param sortby
+     * Get Top Rated movies
      * @return
      */
-    public static List<Movie> GetTopRatedMovies(String sortby) throws IOException {
+    public static List<Movie> GetTopRatedMovies() throws IOException {
         String jsonMovies = null;
         List<Movie> lstMovies = null;
         Uri uri = Uri.parse(TOPRATED_MOVIES_URL).buildUpon()
@@ -78,6 +92,15 @@ public class MoviesDBUtili {
         jsonMovies = GetResponseFromURL(url);
         lstMovies = jsonToMoviesList(jsonMovies);
         return lstMovies;
+    }
+
+    /**
+     * Get full poster url by adding BaseURL + posterpath
+     * @param posterPath
+     * @return
+     */
+    public static String GetPosterURL(String posterPath){
+        return BASE_IMAGE_URL + posterPath;
     }
 
     /**
@@ -95,7 +118,9 @@ public class MoviesDBUtili {
             scanner.useDelimiter("\\A");
             boolean hasInput = scanner.hasNext();
             if (hasInput) {
-                return scanner.next();
+                response = scanner.next();
+                Log.i(TAG,response);
+                return response;
             } else {
                 return null;
             }

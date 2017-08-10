@@ -8,4 +8,7 @@
     <string name="menu_sort_popular">SortByPopularity</string>
     <string name="menu_sort_rating">SortByRatings</string>
 
+    <!-- Activity Titles-->
+    <string name="movie_list_title">Movie List</string>
+    <string name="movie_detail_title">Movie Detail</string>
 </resources>

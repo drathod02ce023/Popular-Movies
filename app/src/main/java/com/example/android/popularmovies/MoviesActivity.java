@@ -1,5 +1,6 @@
 package com.example.android.popularmovies;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,9 +20,9 @@ import com.example.android.popularmovies.utility.MoviesDBUtili;
 import java.io.IOException;
 import java.util.List;
 
-public class MoviesActivity extends AppCompatActivity {
+public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListenr {
 
-    private static final String TAG = MoviesDBUtili.class.getSimpleName();
+    private static final String TAG = MoviesActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private MoviesAdaptor mMoviesAdapter;
     private TextView mErrorMessageDisplay;
@@ -31,6 +32,8 @@ public class MoviesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
+        setTitle(R.string.movie_list_title);
+
 
         /**
          * This value decides how many columns should be displayed in the Recyclerview's Grid.
@@ -40,8 +43,9 @@ public class MoviesActivity extends AppCompatActivity {
         /**
          * Create RecyclerView and set its Layout to GridView using LayoutManager.
          */
+        GridLayoutManager glm = new GridLayoutManager(this,numberOfGridColumns);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this,numberOfGridColumns));
+        mRecyclerView.setLayoutManager(glm);
         mRecyclerView.setHasFixedSize(true);
 
         /**
@@ -52,7 +56,7 @@ public class MoviesActivity extends AppCompatActivity {
         /**
          * Set an adaptor to our RecyclerView,Adaptor is the responsible to load the data to the view.
          */
-        mMoviesAdapter = new MoviesAdaptor(MoviesActivity.this);
+        mMoviesAdapter = new MoviesAdaptor(MoviesActivity.this,this);
         mRecyclerView.setAdapter(mMoviesAdapter);
 
         /**
@@ -124,6 +128,21 @@ public class MoviesActivity extends AppCompatActivity {
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onMovieClickEvent(Movie movie) {
+        Intent intent = new Intent(this, MovieDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", movie.getMovieID());
+        bundle.putString("poster_path", movie.getPosterPath());
+        bundle.putString("original_title", movie.getOriginalTitle());
+        bundle.putString("overview", movie.getPlotSynopsis());
+        bundle.putString("vote_average", movie.getUserRatings());
+        bundle.putString("release_date", movie.getReleaseDate());
+        intent.putExtras(bundle);
+        startActivity(intent);
+
+    }
+
     /**
      * Class to load movies Asynchronously ,Without blocking UI Thread.
      */
@@ -140,10 +159,11 @@ public class MoviesActivity extends AppCompatActivity {
             if (params.length == 0) {
                 return null;
             }
+            List<Movie> lstMovies = null;
             switch (params[0]){
                 case MoviesDBUtili.POPULAR:
                     try {
-                        MoviesDBUtili.GetPopularMovies();
+                        lstMovies = MoviesDBUtili.GetPopularMovies();
                     } catch (IOException e) {
                         Log.e(TAG,e.getMessage());
                     }
@@ -153,7 +173,7 @@ public class MoviesActivity extends AppCompatActivity {
                     break;
                 case MoviesDBUtili.TOPRATED:
                     try {
-                        MoviesDBUtili.GetPopularMovies();
+                        lstMovies = MoviesDBUtili.GetTopRatedMovies();
                     } catch (IOException e) {
                         Log.e(TAG,e.getMessage());
                     }
@@ -164,7 +184,7 @@ public class MoviesActivity extends AppCompatActivity {
                 default:
                     return null;
             }
-            return null;
+            return lstMovies;
         }
 
         @Override
