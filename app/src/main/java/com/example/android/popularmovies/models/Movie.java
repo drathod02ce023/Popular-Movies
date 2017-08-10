@@ -26,6 +26,9 @@ public class Movie {
     @SerializedName("release_date")
     private String ReleaseDate;
 
+    @SerializedName("runtime")
+    private int RunTime;
+
     public int getMovieID() {
         return MovieID;
     }
@@ -72,6 +75,12 @@ public class Movie {
 
     public void setReleaseDate(String releaseDate) {
         ReleaseDate = releaseDate;
+    }
+    public int getRunTime() {
+        return RunTime;
+    }
+    public void setRunTime(int runTime) {
+        RunTime = runTime;
     }
 
     @Override

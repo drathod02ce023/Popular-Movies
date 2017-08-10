@@ -138,6 +138,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         bundle.putString("overview", movie.getPlotSynopsis());
         bundle.putString("vote_average", movie.getUserRatings());
         bundle.putString("release_date", movie.getReleaseDate());
+        bundle.putInt("runtime",movie.getRunTime());
         intent.putExtras(bundle);
         startActivity(intent);
 

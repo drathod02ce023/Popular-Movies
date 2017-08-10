@@ -11,4 +11,9 @@
     <!-- Activity Titles-->
     <string name="movie_list_title">Movie List</string>
     <string name="movie_detail_title">Movie Detail</string>
+
+    <!-- Screen lables -->
+    <string name="mark_favourite">MARK AS \nFAVOURITE</string>
+    <!-- -->
+    <string name="content_description">Popular Movie</string>
 </resources>

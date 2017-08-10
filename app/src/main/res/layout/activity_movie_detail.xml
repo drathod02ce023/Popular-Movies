@@ -1,19 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_movie_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.android.popularmovies.MovieDetailActivity">
+    tools:context="com.example.android.popularmovies.MovieDetailActivity"
+    android:orientation="vertical">
 <TextView
     android:id="@+id/movieTitle"
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:background="@android:color/holo_blue_light"
-    android:textSize="40dp"
-    android:text="Movie Title"
+    android:textSize="35sp"
     android:paddingLeft="10dp"
     android:gravity="center_vertical"
     android:textColor="@android:color/white"/>
+    <LinearLayout
+        android:paddingTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:contentDescription="@string/content_description"
+            android:paddingLeft="10dp"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:scaleType="fitXY"
+            android:id="@+id/imgPosterDetail"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="50dp">
+            <TextView
+                android:textSize="20sp"
+                android:id="@+id/releaseDateDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textStyle="italic"
+                android:textSize="15sp"
+                android:id="@+id/durationDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textSize="10sp"
+                android:id="@+id/userRatingsDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Button
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:text="@string/mark_favourite"
+                android:background="@android:color/holo_blue_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:textSize="15dp"
+        android:id="@+id/synopsisDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-</RelativeLayout>
+</LinearLayout>
