@@ -68,6 +68,7 @@ public class MoviesDBUtili {
                 .build();
         URL url = new URL(uri.toString());
         jsonMovie = GetResponseFromURL(url);
+        movie = jsonToMovie(jsonMovie);
         return movie;
     }
 
@@ -92,6 +93,7 @@ public class MoviesDBUtili {
      * @param jsondata Json string came as a APIs response.
      */
     private static List<Movie> jsonToMoviesList(String jsondata){
+        Log.i(TAG,jsondata);
         List<Movie> lstMovies = null;
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Movie>>(){}.getType();
@@ -112,9 +114,15 @@ public class MoviesDBUtili {
      * @return Movie object converted from jsondata.
      */
     public static Movie jsonToMovie(String jsondata){
+        Log.i(TAG,jsondata);
         Gson gson = new Gson();
         Movie movie;
         movie = gson.fromJson(jsondata,Movie.class);
+        //Fetch Reviews
+//        Type listReviewType = new TypeToken<List<Review>>(){}.getType();
+//        JsonElement jelement = new JsonParser().parse(jsondata);
+//        JsonObject jobject = jelement.getAsJsonObject();
+//        JsonArray array = jobject.getAsJsonArray("reviews");
         return movie;
     }
 
@@ -159,7 +167,6 @@ public class MoviesDBUtili {
             boolean hasInput = scanner.hasNext();
             if (hasInput) {
                 response = scanner.next();
-                Log.i(TAG,response);
                 return response;
             } else {
                 return null;
