@@ -12,13 +12,14 @@ import com.squareup.picasso.Picasso;
 import static com.example.android.popularmovies.R.id.movieTitle;
 
 public class MovieDetailActivity extends AppCompatActivity {
+    //private static final String TAG = MovieDetailActivity.class.getSimpleName();
 
-    TextView txtViewMovieTitle;
-    TextView txtViewReleaseDate;
-    TextView txtViewUserRating;
-    TextView txtViewSynopsis;
-    TextView txtViewDuration;
-    ImageView txtViewMoviePoster;
+    private TextView txtViewMovieTitle;
+    private TextView txtViewReleaseDate;
+    private TextView txtViewUserRating;
+    private TextView txtViewSynopsis;
+    //private TextView txtViewDuration;
+    private ImageView txtViewMoviePoster;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +30,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         txtViewReleaseDate = (TextView)findViewById(R.id.releaseDateDetail);
         txtViewUserRating = (TextView)findViewById(R.id.userRatingsDetail);
         txtViewSynopsis = (TextView)findViewById(R.id.synopsisDetail);
-        txtViewDuration = (TextView)findViewById(R.id.durationDetail);
+        //txtViewDuration = (TextView)findViewById(R.id.durationDetail);
         initialize(getIntent());
 
     }
@@ -39,13 +40,13 @@ public class MovieDetailActivity extends AppCompatActivity {
             return;
         }
         Bundle bundle = intent.getExtras();
-        int movieid = bundle.getInt("id");
+        //int movieid = bundle.getInt("id");
         String posterPath = bundle.getString("poster_path");
         String originalTitle = bundle.getString("original_title");
         String plotSynopsis = bundle.getString("overview");
-        String userRating = bundle.getString("vote_average");
+        String userRating = bundle.getString("vote_average") + "/10";
         String releaseDate = bundle.getString("release_date");
-        int runtime = bundle.getInt("runtime");
+        //int runtime = bundle.getInt("runtime");
 
         //Set data
         //Title
@@ -56,10 +57,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         String fullPosterPath = MoviesDBUtili.GetPosterURL(posterPath);
         Picasso.with(this).load(fullPosterPath).into(txtViewMoviePoster);
         //Duration
-        txtViewDuration.setText(String.valueOf(runtime));
+        //txtViewDuration.setText(String.valueOf());
         //UserRatings
-        txtViewUserRating.setText(userRating+"/10");
+        txtViewUserRating.setText(userRating);
         //Synopsis
         txtViewSynopsis.setText(plotSynopsis);
     }
+
+    
 }

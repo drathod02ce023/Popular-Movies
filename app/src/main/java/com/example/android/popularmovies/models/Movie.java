@@ -2,11 +2,16 @@ package com.example.android.popularmovies.models;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by dhaval on 2017/08/10.
- */
+import java.util.List;
 
+/**
+ * Movie class is being used to hold the individual movie detail.
+ */
 public class Movie {
+
+    private List<Video> lstVideo;
+
+    private List<Review> lstReview;
 
     @SerializedName("id")
     private int MovieID;
@@ -33,55 +38,71 @@ public class Movie {
         return MovieID;
     }
 
-    public void setMovieID(int movieID) {
-        MovieID = movieID;
-    }
+// --Commented out by Inspection START (2017/08/11 16:53):
+//    public void setMovieID(int movieID) {
+//        MovieID = movieID;
+//    }
+// --Commented out by Inspection STOP (2017/08/11 16:53)
 
     public String getPosterPath() {
         return PosterPath;
     }
 
-    public void setPosterPath(String posterPath) {
-        PosterPath = posterPath;
-    }
+// --Commented out by Inspection START (2017/08/11 16:53):
+//    public void setPosterPath(String posterPath) {
+//        PosterPath = posterPath;
+//    }
+// --Commented out by Inspection STOP (2017/08/11 16:53)
 
     public String getOriginalTitle() {
         return OriginalTitle;
     }
 
-    public void setOriginalTitle(String originalTitle) {
-        OriginalTitle = originalTitle;
-    }
+// --Commented out by Inspection START (2017/08/11 16:53):
+//    public void setOriginalTitle(String originalTitle) {
+//        OriginalTitle = originalTitle;
+//    }
+// --Commented out by Inspection STOP (2017/08/11 16:53)
 
     public String getPlotSynopsis() {
         return PlotSynopsis;
     }
 
-    public void setPlotSynopsis(String plotSynopsis) {
-        PlotSynopsis = plotSynopsis;
-    }
+// --Commented out by Inspection START (2017/08/11 16:53):
+//    public void setPlotSynopsis(String plotSynopsis) {
+//        PlotSynopsis = plotSynopsis;
+//    }
+// --Commented out by Inspection STOP (2017/08/11 16:53)
 
     public String getUserRatings() {
         return UserRatings;
     }
 
-    public void setUserRatings(String userRatings) {
-        UserRatings = userRatings;
-    }
+// --Commented out by Inspection START (2017/08/11 16:54):
+//    public void setUserRatings(String userRatings) {
+//        UserRatings = userRatings;
+//    }
+// --Commented out by Inspection STOP (2017/08/11 16:54)
 
     public String getReleaseDate() {
         return ReleaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
-        ReleaseDate = releaseDate;
-    }
-    public int getRunTime() {
-        return RunTime;
-    }
-    public void setRunTime(int runTime) {
-        RunTime = runTime;
-    }
+// --Commented out by Inspection START (2017/08/11 16:54):
+// --Commented out by Inspection START (2017/08/11 16:54):
+// --Commented out by Inspection START (2017/08/11 16:54):
+//////    public void setReleaseDate(String releaseDate) {
+//////        ReleaseDate = releaseDate;
+//////    }
+////// --Commented out by Inspection STOP (2017/08/11 16:54)
+////    public int getRunTime() {
+////        return RunTime;
+////    }
+//// --Commented out by Inspection STOP (2017/08/11 16:54)
+//    public void setRunTime(int runTime) {
+//        RunTime = runTime;
+//    }
+// --Commented out by Inspection STOP (2017/08/11 16:54)
 
     @Override
     public String toString() {

@@ -20,7 +20,7 @@ import com.example.android.popularmovies.utility.MoviesDBUtili;
 import java.io.IOException;
 import java.util.List;
 
-public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListenr {
+public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListener {
 
     private static final String TAG = MoviesActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
@@ -36,7 +36,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
 
 
         /**
-         * This value decides how many columns should be displayed in the Recyclerview's Grid.
+         * This value decides how many columns should be displayed in the RecyclerView's Grid.
          */
         int numberOfGridColumns = 2;
 
@@ -49,7 +49,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         mRecyclerView.setHasFixedSize(true);
 
         /**
-         * Create error message textview to show any error occured during the course of our action.
+         * Create error message textview to show any error occurred during the course of our action.
          */
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
@@ -95,14 +95,14 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     }
 
     /**
-     * Load Popular movies from Datasource using API Call
+     * Load Popular movies from DataSource using API Call
      */
     private void loadPopularMovies(){
         new AsyncMoviesLoader().execute(MoviesDBUtili.POPULAR);
     }
 
     /**
-     * Load TopRated movies from Datasource using API Call
+     * Load TopRated movies from DataSource using API Call
      */
     private void loadTopRatedMovies(){
         new AsyncMoviesLoader().execute(MoviesDBUtili.TOPRATED);
@@ -119,7 +119,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     }
 
     /**
-     * Hide RecyclerView and set Error Messge view to visible.
+     * Hide RecyclerView and set Error Message view to visible.
      */
     private void showErrorMessage() {
         /* First, hide the currently visible data */
@@ -138,7 +138,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         bundle.putString("overview", movie.getPlotSynopsis());
         bundle.putString("vote_average", movie.getUserRatings());
         bundle.putString("release_date", movie.getReleaseDate());
-        bundle.putInt("runtime",movie.getRunTime());
+        //bundle.putInt("runtime",movie.getRunTime());
         intent.putExtras(bundle);
         startActivity(intent);
 
@@ -168,8 +168,8 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
                     } catch (IOException e) {
                         Log.e(TAG,e.getMessage());
                     }
-                    catch(Exception e){
-                        Log.e(TAG,e.getMessage());
+                    catch(Exception ex){
+                        Log.e(TAG,ex.getMessage());
                     }
                     break;
                 case MoviesDBUtili.TOPRATED:
@@ -178,8 +178,8 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
                     } catch (IOException e) {
                         Log.e(TAG,e.getMessage());
                     }
-                    catch(Exception e){
-                        Log.e(TAG,e.getMessage());
+                    catch(Exception ex){
+                        Log.e(TAG,ex.getMessage());
                     }
                     break;
                 default:
