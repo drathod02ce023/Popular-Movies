@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.android.popularmovies.models.Movie;
+import com.example.android.popularmovies.models.Video;
+import com.example.android.popularmovies.models.Review;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -117,12 +119,26 @@ public class MoviesDBUtili {
         Log.i(TAG,jsondata);
         Gson gson = new Gson();
         Movie movie;
+        List<Review> lstReview;
+        List<Video> lstVideo;
+
         movie = gson.fromJson(jsondata,Movie.class);
+        JsonElement jelement = new JsonParser().parse(jsondata);
+        JsonObject jobject = jelement.getAsJsonObject();
         //Fetch Reviews
-//        Type listReviewType = new TypeToken<List<Review>>(){}.getType();
-//        JsonElement jelement = new JsonParser().parse(jsondata);
-//        JsonObject jobject = jelement.getAsJsonObject();
-//        JsonArray array = jobject.getAsJsonArray("reviews");
+        Type listReviewType = new TypeToken<List<Review>>(){}.getType();
+        JsonObject reviewObject = jobject.getAsJsonObject("reviews");
+        JsonArray resultArray1 = reviewObject.getAsJsonArray("results");
+        lstReview = gson.fromJson(resultArray1,listReviewType);
+
+        //Fetch Videos
+        Type listVideoType = new TypeToken<List<Video>>(){}.getType();
+        JsonObject movieObject = jobject.getAsJsonObject("videos");
+        JsonArray resultArray2 = movieObject.getAsJsonArray("results");
+        lstVideo = gson.fromJson(resultArray2,listVideoType);
+
+        movie.setLstReview(lstReview);
+        movie.setLstVideo(lstVideo);
         return movie;
     }
 

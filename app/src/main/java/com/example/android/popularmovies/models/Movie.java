@@ -2,6 +2,8 @@ package com.example.android.popularmovies.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Movie class is being used to hold the individual movie detail.
  */
@@ -28,6 +30,26 @@ public class Movie {
 
     @SerializedName("runtime")
     private int RunTime;
+
+    List<Review> lstReview;
+
+    List<Video> lstVideo;
+
+    public List<Review> getLstReview() {
+        return lstReview;
+    }
+
+    public void setLstReview(List<Review> lstReview) {
+        this.lstReview = lstReview;
+    }
+
+    public List<Video> getLstVideo() {
+        return lstVideo;
+    }
+
+    public void setLstVideo(List<Video> lstVideo) {
+        this.lstVideo = lstVideo;
+    }
 
     public int getMovieID() {
         return MovieID;

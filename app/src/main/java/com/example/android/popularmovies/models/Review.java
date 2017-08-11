@@ -9,27 +9,31 @@ import com.google.gson.annotations.SerializedName;
 
 public class Review {
 
+    @SerializedName("id")
     private String ReviewId;
+    @SerializedName("author")
     private String ReviewAuthor;
+    @SerializedName("content")
     private String ReviewContent;
+    @SerializedName("url")
     private String ReviewUrl;
 
-    @SerializedName("id")
+
     public String getReviewId() {
         return ReviewId;
     }
 
-    @SerializedName("author")
+
     public String getReviewAuthor() {
         return ReviewAuthor;
     }
 
-    @SerializedName("content")
+
     public String getReviewContent() {
         return ReviewContent;
     }
 
-    @SerializedName("url")
+
     public String getReviewUrl() {
         return ReviewUrl;
     }
