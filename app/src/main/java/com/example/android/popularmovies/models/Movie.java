@@ -31,9 +31,9 @@ public class Movie {
     @SerializedName("runtime")
     private int RunTime;
 
-    List<Review> lstReview;
+   private List<Review> lstReview;
 
-    List<Video> lstVideo;
+   private List<Video> lstVideo;
 
     public List<Review> getLstReview() {
         return lstReview;

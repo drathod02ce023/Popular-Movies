@@ -42,7 +42,7 @@ public class MoviesDBUtili {
     private static final String MOVIE_DETAIL_URL = "https://api.themoviedb.org/3/movie/{movie_id}";
 
     //API Key
-    private static final String APIKEY = "2072aa286a42827354ab00a6d0fd73fc";
+    private static final String APIKEY = "<API KEY>";
 
     //PARAM KEYS
     private static final String PARAM_APIKEY = "api_key";
@@ -58,8 +58,8 @@ public class MoviesDBUtili {
      * @throws IOException
      */
     public static Movie GetMovieDetails(int movieid) throws IOException{
-        Movie movie = null;
-        String jsonMovie = null;
+        Movie movie ;
+        String jsonMovie;
         /**
          * Create URL to call multiple APIs (GetDetail,GetReviews,GetVideos) at once using append_to_response method.
          * Example : https://api.themoviedb.org/3/movie/157336?api_key={api_key}&append_to_response=videos,reviews
@@ -111,11 +111,11 @@ public class MoviesDBUtili {
     }
 
     /**
-     * Convert jsondata to Movie object. TODO Will be used in stage2.
+     * Convert jsondata to Movie object.
      * @param jsondata Json string came as a APIs response.
      * @return Movie object converted from jsondata.
      */
-    public static Movie jsonToMovie(String jsondata){
+    private static Movie jsonToMovie(String jsondata){
         Log.i(TAG,jsondata);
         Gson gson = new Gson();
         Movie movie;
@@ -125,6 +125,7 @@ public class MoviesDBUtili {
         movie = gson.fromJson(jsondata,Movie.class);
         JsonElement jelement = new JsonParser().parse(jsondata);
         JsonObject jobject = jelement.getAsJsonObject();
+
         //Fetch Reviews
         Type listReviewType = new TypeToken<List<Review>>(){}.getType();
         JsonObject reviewObject = jobject.getAsJsonObject("reviews");
