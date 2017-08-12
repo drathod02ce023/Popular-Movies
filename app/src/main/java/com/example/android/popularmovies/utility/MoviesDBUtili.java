@@ -4,8 +4,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.android.popularmovies.models.Movie;
-import com.example.android.popularmovies.models.Video;
 import com.example.android.popularmovies.models.Review;
+import com.example.android.popularmovies.models.Video;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -42,7 +42,7 @@ public class MoviesDBUtili {
     private static final String MOVIE_DETAIL_URL = "https://api.themoviedb.org/3/movie/{movie_id}";
 
     //API Key
-    private static final String APIKEY = "<API KEY>";
+    private static final String APIKEY = "";
 
     //PARAM KEYS
     private static final String PARAM_APIKEY = "api_key";

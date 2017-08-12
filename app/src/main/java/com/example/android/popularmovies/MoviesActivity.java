@@ -1,6 +1,9 @@
 package com.example.android.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import com.example.android.popularmovies.adaptors.MoviesAdaptor;
 import com.example.android.popularmovies.models.Movie;
 import com.example.android.popularmovies.utility.MoviesDBUtili;
+import com.example.android.popularmovies.utility.SystemUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -98,6 +102,11 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
      * Load Popular movies from DataSource using API Call
      */
     private void loadPopularMovies(){
+        if(!SystemUtil.isOnline(this)){
+            String error = getString(R.string.newtork_error_message);
+            showErrorMessage(error);
+            return;
+        }
         new AsyncMoviesLoader().execute(MoviesDBUtili.POPULAR);
     }
 
@@ -105,6 +114,11 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
      * Load TopRated movies from DataSource using API Call
      */
     private void loadTopRatedMovies(){
+        if(!SystemUtil.isOnline(this)){
+            String error = getString(R.string.newtork_error_message);
+            showErrorMessage(error);
+            return;
+        }
         new AsyncMoviesLoader().execute(MoviesDBUtili.TOPRATED);
     }
 
@@ -121,11 +135,12 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     /**
      * Hide RecyclerView and set Error Message view to visible.
      */
-    private void showErrorMessage() {
+    private void showErrorMessage(String errMsg) {
         /* First, hide the currently visible data */
         mRecyclerView.setVisibility(View.INVISIBLE);
         /* Then, show the error */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
+        mErrorMessageDisplay.setText(errMsg);
     }
 
     @Override
@@ -196,7 +211,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
                 showMoviesDataView();
                 mMoviesAdapter.setData(lstMovies);
             } else {
-                showErrorMessage();
+                showErrorMessage(getString());
             }
         }
     }

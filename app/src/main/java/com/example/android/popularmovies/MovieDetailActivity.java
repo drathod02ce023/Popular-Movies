@@ -123,7 +123,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             Movie movie = null;
             String movieid = params[0];
             try {
-                movie = MoviesDBUtili.GetMovieDetails(Integer.valueOf(movieid));
+                movie = MoviesDBUtili.GetMovieDetails(Integer.valueOf(movieid),this);
             } catch (IOException e) {
                 Log.e(TAG,e.getMessage());
             }

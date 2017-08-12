@@ -4,6 +4,10 @@
         An error has occurred. Please try again.
     </string>
 
+    <string name="newtork_error_message">
+        Network error has occurred.
+    </string>
+
     <!--Menu Section-->
     <string name="menu_sort_popular">SortByPopularity</string>
     <string name="menu_sort_rating">SortByRatings</string>
