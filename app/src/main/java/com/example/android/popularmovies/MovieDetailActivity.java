@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,10 +11,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.models.Movie;
-import com.example.android.popularmovies.utility.MoviesDBUtili;
+import com.example.android.popularmovies.utility.MoviesDBUtil;
 import com.squareup.picasso.Picasso;
-
-import java.io.IOException;
 
 public class MovieDetailActivity extends AppCompatActivity {
     private static final String TAG = MovieDetailActivity.class.getSimpleName();
@@ -64,7 +61,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     /**
      * Display data on the screen.
      */
-    private void setData(Movie movie){
+    private void setData(Movie movie) {
         String posterPath = movie.getPosterPath();
         String originalTitle = movie.getOriginalTitle();
         String plotSynopsis = movie.getPlotSynopsis();
@@ -78,7 +75,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         //ReleaseDate
         txtViewReleaseDate.setText(releaseDate);
         //Poster
-        String fullPosterPath = MoviesDBUtili.GetPosterURL(posterPath);
+        String fullPosterPath = MoviesDBUtil.getPosterURL(posterPath,this);
         Picasso.with(this).load(fullPosterPath).into(txtViewMoviePoster);
         //Duration
         txtViewDuration.setText(runtime);
@@ -120,17 +117,9 @@ public class MovieDetailActivity extends AppCompatActivity {
             if (params.length == 0) {
                 return null;
             }
-            Movie movie = null;
+            Movie movie;
             String movieid = params[0];
-            try {
-                movie = MoviesDBUtili.GetMovieDetails(Integer.valueOf(movieid),this);
-            } catch (IOException e) {
-                Log.e(TAG,e.getMessage());
-            }
-            catch(Exception e){
-                Log.e(TAG,e.getMessage());
-            }
-
+            movie = MoviesDBUtil.getMovieDetails(Integer.valueOf(movieid),getApplicationContext());
             return movie;
         }
 

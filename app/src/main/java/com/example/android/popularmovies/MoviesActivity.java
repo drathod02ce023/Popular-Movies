@@ -1,15 +1,11 @@
 package com.example.android.popularmovies;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,10 +14,9 @@ import android.widget.TextView;
 
 import com.example.android.popularmovies.adaptors.MoviesAdaptor;
 import com.example.android.popularmovies.models.Movie;
-import com.example.android.popularmovies.utility.MoviesDBUtili;
+import com.example.android.popularmovies.utility.MoviesDBUtil;
 import com.example.android.popularmovies.utility.SystemUtil;
 
-import java.io.IOException;
 import java.util.List;
 
 public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListener {
@@ -50,7 +45,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         GridLayoutManager glm = new GridLayoutManager(this,numberOfGridColumns);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
         mRecyclerView.setLayoutManager(glm);
-        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(false);
 
         /**
          * Create error message textview to show any error occurred during the course of our action.
@@ -102,24 +97,24 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
      * Load Popular movies from DataSource using API Call
      */
     private void loadPopularMovies(){
-        if(!SystemUtil.isOnline(this)){
+        if(SystemUtil.isOnline(this)){
             String error = getString(R.string.newtork_error_message);
             showErrorMessage(error);
             return;
         }
-        new AsyncMoviesLoader().execute(MoviesDBUtili.POPULAR);
+        new AsyncMoviesLoader().execute(MoviesDBUtil.POPULAR);
     }
 
     /**
      * Load TopRated movies from DataSource using API Call
      */
     private void loadTopRatedMovies(){
-        if(!SystemUtil.isOnline(this)){
+        if(SystemUtil.isOnline(this)){
             String error = getString(R.string.newtork_error_message);
             showErrorMessage(error);
             return;
         }
-        new AsyncMoviesLoader().execute(MoviesDBUtili.TOPRATED);
+        new AsyncMoviesLoader().execute(MoviesDBUtil.TOPRATED);
     }
 
     /**
@@ -175,27 +170,13 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
             if (params.length == 0) {
                 return null;
             }
-            List<Movie> lstMovies = null;
+            List<Movie> lstMovies;
             switch (params[0]){
-                case MoviesDBUtili.POPULAR:
-                    try {
-                        lstMovies = MoviesDBUtili.GetPopularMovies();
-                    } catch (IOException e) {
-                        Log.e(TAG,e.getMessage());
-                    }
-                    catch(Exception ex){
-                        Log.e(TAG,ex.getMessage());
-                    }
+                case MoviesDBUtil.POPULAR:
+                    lstMovies = MoviesDBUtil.getPopularMovies(getApplicationContext());
                     break;
-                case MoviesDBUtili.TOPRATED:
-                    try {
-                        lstMovies = MoviesDBUtili.GetTopRatedMovies();
-                    } catch (IOException e) {
-                        Log.e(TAG,e.getMessage());
-                    }
-                    catch(Exception ex){
-                        Log.e(TAG,ex.getMessage());
-                    }
+                case MoviesDBUtil.TOPRATED:
+                    lstMovies = MoviesDBUtil.getTopRatedMovies(getApplicationContext());
                     break;
                 default:
                     return null;
@@ -211,7 +192,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
                 showMoviesDataView();
                 mMoviesAdapter.setData(lstMovies);
             } else {
-                showErrorMessage(getString());
+                showErrorMessage(getString(R.string.error_message));
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.example.android.popularmovies.utility;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
@@ -27,22 +28,13 @@ import javax.net.ssl.HttpsURLConnection;
  * Utility class to connect to themoviedb APIs
  */
 
-public class MoviesDBUtili {
+public class MoviesDBUtil {
 
-    private static final String TAG = MoviesDBUtili.class.getSimpleName();
+    private static final String TAG = MoviesDBUtil.class.getSimpleName();
 
     //STRING CONSTANTS
     public static final String POPULAR = "popular";
     public static final String TOPRATED = "toprated";
-
-    //URL
-    private static final String POPULAR_MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
-    private static final String TOPRATED_MOVIES_URL = "https://api.themoviedb.org/3/movie/top_rated";
-    private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185/";
-    private static final String MOVIE_DETAIL_URL = "https://api.themoviedb.org/3/movie/{movie_id}";
-
-    //API Key
-    private static final String APIKEY = "";
 
     //PARAM KEYS
     private static final String PARAM_APIKEY = "api_key";
@@ -55,22 +47,29 @@ public class MoviesDBUtili {
      * To get movie details.
      * @param movieid Id of the movie we need the details for.
      * @return Object of the movie class.
-     * @throws IOException
      */
-    public static Movie GetMovieDetails(int movieid) throws IOException{
-        Movie movie ;
+    public static Movie getMovieDetails(int movieid,Context context){
+        Movie movie;
         String jsonMovie;
-        /**
-         * Create URL to call multiple APIs (GetDetail,GetReviews,GetVideos) at once using append_to_response method.
-         * Example : https://api.themoviedb.org/3/movie/157336?api_key={api_key}&append_to_response=videos,reviews
-         */
-        Uri uri = Uri.parse(MOVIE_DETAIL_URL.replace("{movie_id}",String.valueOf(movieid))).buildUpon()
-                .appendQueryParameter(PARAM_APIKEY,APIKEY)
-                .appendQueryParameter(PARAM_APPEND_TO_RESPONSE,VIDEOS+","+REVIEWS)
-                .build();
-        URL url = new URL(uri.toString());
-        jsonMovie = GetResponseFromURL(url);
-        movie = jsonToMovie(jsonMovie);
+        try {
+            String urlMovieDetail = ConfigUtil.getProperty(ConfigUtil.url_movie_detail, context);
+            String apikey = ConfigUtil.getProperty(ConfigUtil.apikey, context);
+            /**
+             * Create URL to call multiple APIs (GetDetail,GetReviews,GetVideos) at once using append_to_response method.
+             * Example : https://api.themoviedb.org/3/movie/157336?api_key={api_key}&append_to_response=videos,reviews
+             */
+            Uri uri = Uri.parse(urlMovieDetail.replace("{movie_id}", String.valueOf(movieid))).buildUpon()
+                    .appendQueryParameter(PARAM_APIKEY, apikey)
+                    .appendQueryParameter(PARAM_APPEND_TO_RESPONSE, VIDEOS + "," + REVIEWS)
+                    .build();
+            URL url = new URL(uri.toString());
+            jsonMovie = getResponseFromURL(url);
+            movie = jsonToMovie(jsonMovie);
+        }
+        catch (IOException ex){
+            Log.e(TAG,ex.getMessage());
+            throw new RuntimeException(ex);
+        }
         return movie;
     }
 
@@ -78,17 +77,73 @@ public class MoviesDBUtili {
      * Get all the movies.
      * @return Get popular movies list.
      */
-    public static List<Movie> GetPopularMovies() throws IOException {
+    public static List<Movie> getPopularMovies(Context context) {
         String jsonMovies;
         List<Movie> lstMovies;
-        Uri uri = Uri.parse(POPULAR_MOVIES_URL).buildUpon()
-                .appendQueryParameter(PARAM_APIKEY,APIKEY)
+        try
+        {
+        String apikey = ConfigUtil.getProperty(ConfigUtil.apikey, context);
+        String urlPopularMovies = ConfigUtil.getProperty(ConfigUtil.url_popular_movie, context);
+
+        Uri uri = Uri.parse(urlPopularMovies).buildUpon()
+                .appendQueryParameter(PARAM_APIKEY, apikey)
                 .build();
         URL url = new URL(uri.toString());
-        jsonMovies = GetResponseFromURL(url);
+        jsonMovies = getResponseFromURL(url);
         lstMovies = jsonToMoviesList(jsonMovies);
+        }
+        catch (IOException ex){
+            Log.e(TAG,ex.getMessage());
+            throw new RuntimeException(ex);
+        }
         return lstMovies;
     }
+
+    /**
+     * Get Top Rated movies
+     * @return List of top rated movies came as a result of API call.
+     */
+    public static List<Movie> getTopRatedMovies(Context context) {
+        String jsonMovies;
+        List<Movie> lstMovies;
+        try {
+
+
+            String apikey = ConfigUtil.getProperty(ConfigUtil.apikey, context);
+            String urlTopratedMovies = ConfigUtil.getProperty(ConfigUtil.url_toprated_movie, context);
+
+            Uri uri = Uri.parse(urlTopratedMovies).buildUpon()
+                    .appendQueryParameter(PARAM_APIKEY, apikey)
+                    .build();
+            URL url = new URL(uri.toString());
+            jsonMovies = getResponseFromURL(url);
+            lstMovies = jsonToMoviesList(jsonMovies);
+        }
+        catch (IOException ex){
+            Log.e(TAG,ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+        return lstMovies;
+    }
+
+    /**
+     * Get full poster url by adding BaseURL + posterpath
+     * @param posterPath relative path of the movie poster.
+     * @return full path of the movie poster.
+     */
+    public static String getPosterURL(String posterPath,Context context) {
+        String urlImage;
+        try {
+             urlImage = ConfigUtil.getProperty(ConfigUtil.url_base_image, context);
+        }
+        catch (IOException ex){
+            Log.e(TAG,ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+        return urlImage + posterPath;
+    }
+
+    //*********************************************** Private Methods *****************************************************
 
     /**
      * Convert json data to the list of movies using Gson.
@@ -96,17 +151,13 @@ public class MoviesDBUtili {
      */
     private static List<Movie> jsonToMoviesList(String jsondata){
         Log.i(TAG,jsondata);
-        List<Movie> lstMovies = null;
+        List<Movie> lstMovies;
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Movie>>(){}.getType();
         JsonElement jelement = new JsonParser().parse(jsondata);
         JsonObject jobject = jelement.getAsJsonObject();
         JsonArray array = jobject.getAsJsonArray("results");
-        try{
-            lstMovies = gson.fromJson(array, listType);
-        }catch (Exception ex){
-            Log.e(TAG,ex.getMessage());
-        }
+        lstMovies = gson.fromJson(array, listType);
         return lstMovies;
     }
 
@@ -144,40 +195,16 @@ public class MoviesDBUtili {
     }
 
     /**
-     * Get Top Rated movies
-     * @return List of top rated movies came as a result of API call.
-     */
-    public static List<Movie> GetTopRatedMovies() throws IOException {
-        String jsonMovies;
-        List<Movie> lstMovies;
-        Uri uri = Uri.parse(TOPRATED_MOVIES_URL).buildUpon()
-                .appendQueryParameter(PARAM_APIKEY,APIKEY)
-                .build();
-        URL url = new URL(uri.toString());
-        jsonMovies = GetResponseFromURL(url);
-        lstMovies = jsonToMoviesList(jsonMovies);
-        return lstMovies;
-    }
-
-    /**
-     * Get full poster url by adding BaseURL + posterpath
-     * @param posterPath relative path of the movie poster.
-     * @return full path of the movie poster.
-     */
-    public static String GetPosterURL(String posterPath){
-        return BASE_IMAGE_URL + posterPath;
-    }
-
-    /**
      * Get Response from url in JSON.
      * @param url API url
      * @return response of the API call
      */
-    private static String GetResponseFromURL(URL url) throws IOException {
+    private static String getResponseFromURL(URL url)  {
         String response;
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+        HttpsURLConnection connection = null;
         InputStream is;
         try {
+            connection = (HttpsURLConnection) url.openConnection();
             is = connection.getInputStream();
             Scanner scanner = new Scanner(is);
             scanner.useDelimiter("\\A");
@@ -188,9 +215,13 @@ public class MoviesDBUtili {
             } else {
                 return null;
             }
+        }catch (IOException ex){
+            throw new RuntimeException(ex);
         }
         finally{
-            connection.disconnect();
+            if(connection != null){
+                connection.disconnect();
+            }
         }
 
     }

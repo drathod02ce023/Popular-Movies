@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.models.Movie;
-import com.example.android.popularmovies.utility.MoviesDBUtili;
+import com.example.android.popularmovies.utility.MoviesDBUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -25,10 +25,10 @@ public class MoviesAdaptor extends RecyclerView.Adapter<MoviesAdaptor.MoviesView
     final private Context context;
     final private MovieOnClickListener mMovieOnClickListener;
 
-    public MoviesAdaptor(Context context,MovieOnClickListener movieOnClickListenr ) {
+    public MoviesAdaptor(Context context,MovieOnClickListener movieOnClickListener ) {
 
         this.context = context;
-        this.mMovieOnClickListener = movieOnClickListenr;
+        this.mMovieOnClickListener = movieOnClickListener;
     }
 
     /**
@@ -64,7 +64,7 @@ public class MoviesAdaptor extends RecyclerView.Adapter<MoviesAdaptor.MoviesView
     public void onBindViewHolder(MoviesViewHolder holder, int position) {
         Movie movie = lstMovies.get(position);
         String posterPath = movie.getPosterPath();
-        String fullPosterPath = MoviesDBUtili.GetPosterURL(posterPath);
+        String fullPosterPath = MoviesDBUtil.getPosterURL(posterPath,context);
         Picasso.with(context).load(fullPosterPath).into(holder.imgPoster);
     }
 
