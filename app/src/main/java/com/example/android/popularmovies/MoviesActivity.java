@@ -1,7 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,13 +13,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.adaptors.MoviesAdaptor;
+import com.example.android.popularmovies.asynctasks.AsyncMoviesLoader;
+import com.example.android.popularmovies.interfaces.OnAsyncMoviesLoadCompleted;
 import com.example.android.popularmovies.models.Movie;
 import com.example.android.popularmovies.utility.MoviesDBUtil;
 import com.example.android.popularmovies.utility.SystemUtil;
 
 import java.util.List;
 
-public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListener {
+public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListener,OnAsyncMoviesLoadCompleted {
 
     private static final String TAG = MoviesActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
@@ -32,12 +34,21 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
         setTitle(R.string.movie_list_title);
+        int numberOfGridColumns;
 
 
         /**
          * This value decides how many columns should be displayed in the RecyclerView's Grid.
          */
-        int numberOfGridColumns = 2;
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+
+             numberOfGridColumns = 2;
+
+        }
+        else{
+             numberOfGridColumns = 4;
+
+        }
 
         /**
          * Create RecyclerView and set its Layout to GridView using LayoutManager.
@@ -102,7 +113,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
             showErrorMessage(error);
             return;
         }
-        new AsyncMoviesLoader().execute(MoviesDBUtil.POPULAR);
+        new AsyncMoviesLoader(getApplicationContext(),this).execute(MoviesDBUtil.POPULAR);
     }
 
     /**
@@ -114,7 +125,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
             showErrorMessage(error);
             return;
         }
-        new AsyncMoviesLoader().execute(MoviesDBUtil.TOPRATED);
+        new AsyncMoviesLoader(getApplicationContext(),this).execute(MoviesDBUtil.TOPRATED);
     }
 
     /**
@@ -154,47 +165,21 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
 
     }
 
-    /**
-     * Class to load movies Asynchronously ,Without blocking UI Thread.
-     */
-    private class AsyncMoviesLoader extends AsyncTask<String,Void,List<Movie>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected List<Movie> doInBackground(String... params)  {
-            if (params.length == 0) {
-                return null;
-            }
-            List<Movie> lstMovies;
-            switch (params[0]){
-                case MoviesDBUtil.POPULAR:
-                    lstMovies = MoviesDBUtil.getPopularMovies(getApplicationContext());
-                    break;
-                case MoviesDBUtil.TOPRATED:
-                    lstMovies = MoviesDBUtil.getTopRatedMovies(getApplicationContext());
-                    break;
-                default:
-                    return null;
-            }
-            return lstMovies;
-        }
-
-        @Override
-        protected void onPostExecute(List<Movie> lstMovies) {
-            super.onPostExecute(lstMovies);
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (lstMovies != null) {
-                showMoviesDataView();
-                mMoviesAdapter.setData(lstMovies);
-            } else {
-                showErrorMessage(getString(R.string.error_message));
-            }
-        }
+    //Before Movies Loading Starts
+    @Override
+    public void beforeProcessStart() {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
+    //After Movies Loading Finished
+    @Override
+    public void afterProcessEnd(List<Movie> lstMovies) {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        if (lstMovies != null) {
+            showMoviesDataView();
+            mMoviesAdapter.setData(lstMovies);
+        } else {
+            showErrorMessage(getString(R.string.error_message));
+        }
+    }
 }

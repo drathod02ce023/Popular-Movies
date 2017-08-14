@@ -1,7 +1,6 @@
 package com.example.android.popularmovies;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,11 +9,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.asynctasks.AsyncMovieDetailsLoader;
+import com.example.android.popularmovies.interfaces.OnAsyncDetailsLoadCompleted;
 import com.example.android.popularmovies.models.Movie;
 import com.example.android.popularmovies.utility.MoviesDBUtil;
 import com.squareup.picasso.Picasso;
 
-public class MovieDetailActivity extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDetailsLoadCompleted {
     private static final String TAG = MovieDetailActivity.class.getSimpleName();
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
@@ -55,7 +56,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
         Bundle bundle = intent.getExtras();
         int movieid = bundle.getInt("id");
-        new AsyncLoadMovieDetail().execute(String.valueOf(movieid));
+        new AsyncMovieDetailsLoader(getApplicationContext(),this).execute(String.valueOf(movieid));
     }
 
     /**
@@ -104,35 +105,22 @@ public class MovieDetailActivity extends AppCompatActivity {
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    private class AsyncLoadMovieDetail extends AsyncTask<String,Void,Movie>{
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
+    //Before Movie Detail Loading Starts
+    @Override
+    public void beforeProcessStart() {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+    }
 
-        @Override
-        protected Movie doInBackground(String... params) {
-            if (params.length == 0) {
-                return null;
-            }
-            Movie movie;
-            String movieid = params[0];
-            movie = MoviesDBUtil.getMovieDetails(Integer.valueOf(movieid),getApplicationContext());
-            return movie;
-        }
-
-        @Override
-        protected void onPostExecute(Movie movie) {
-            super.onPostExecute(movie);
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (movie != null) {
-                showMoviesDataView();
-                setData(movie);
-            } else {
-                showErrorMessage();
-            }
+    //After Movie Detail Loading Finished
+    @Override
+    public void afterProcessEnd(Movie movie) {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        if (movie != null) {
+            showMoviesDataView();
+            setData(movie);
+        } else {
+            showErrorMessage();
         }
     }
 }
