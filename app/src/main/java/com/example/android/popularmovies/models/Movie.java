@@ -1,5 +1,8 @@
 package com.example.android.popularmovies.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -7,8 +10,20 @@ import java.util.List;
 /**
  * Movie class is being used to hold the individual movie detail.
  */
-public class Movie {
+public class Movie implements Parcelable {
 
+
+    private Movie(Parcel in) {
+        MovieID = in.readInt();
+        RunTime = in.readInt();
+        OriginalTitle = in.readString();
+        PlotSynopsis = in.readString();
+        PosterPath = in.readString();
+        ReleaseDate = in.readString();
+        UserRatings = in.readString();
+        //lstVideo = in.readArrayList(new ArrayList<Video>().getClass().getClassLoader());
+        //lstReview = in.readArrayList(new ArrayList<Review>().getClass().getClassLoader());
+    }
 
     @SerializedName("id")
     private int MovieID;
@@ -31,9 +46,9 @@ public class Movie {
     @SerializedName("runtime")
     private int RunTime;
 
-   private List<Review> lstReview;
+    private List<Review> lstReview;
 
-   private List<Video> lstVideo;
+    private List<Video> lstVideo;
 
     public List<Review> getLstReview() {
         return lstReview;
@@ -89,4 +104,43 @@ public class Movie {
     public String toString() {
         return "OriginalTitle : " +getOriginalTitle();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(getMovieID());
+        out.writeInt(getRunTime());
+        out.writeString(getOriginalTitle());
+        out.writeString(getPlotSynopsis());
+        out.writeString(getPosterPath());
+        out.writeString(getReleaseDate());
+        out.writeString(getUserRatings());
+        //out.writeList(getLstVideo());
+        //out.writeList(getLstReview());
+
+    }
+
+    // After implementing the `Parcelable` interface, we need to create the
+    // `Parcelable.Creator<Movie> CREATOR` constant for our class;
+    // Notice how it has our class specified as its type.
+    public static final Parcelable.Creator<Movie> CREATOR
+            = new Parcelable.Creator<Movie>() {
+
+        // This simply calls our new constructor (typically private) and
+        // passes along the unmarshalled `Parcel`, and then returns the new object!
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        // We just need to copy this and change the type to match our class.
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

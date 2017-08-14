@@ -14,6 +14,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by dhaval on 2017/08/09.
  * RecyclerView's Adaptor to load movie list data.
@@ -65,7 +68,7 @@ public class MoviesAdaptor extends RecyclerView.Adapter<MoviesAdaptor.MoviesView
         Movie movie = lstMovies.get(position);
         String posterPath = movie.getPosterPath();
         String fullPosterPath = MoviesDBUtil.getPosterURL(posterPath,context);
-        Picasso.with(context).load(fullPosterPath).into(holder.imgPoster);
+        Picasso.with(context).load(fullPosterPath).placeholder(R.mipmap.ic_launcher).into(holder.imgPoster);
     }
 
     /**
@@ -86,10 +89,10 @@ public class MoviesAdaptor extends RecyclerView.Adapter<MoviesAdaptor.MoviesView
      * Cache of the children views for a movies list item.
      */
     public class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        final ImageView imgPoster;
+        @BindView(R.id.imgPoster) ImageView imgPoster;
         public MoviesViewHolder(View itemView) {
             super(itemView);
-            imgPoster = (ImageView)itemView.findViewById(R.id.imgPoster);
+            ButterKnife.bind(this,itemView);
             itemView.setOnClickListener(this);
         }
 

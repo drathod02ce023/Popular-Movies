@@ -21,21 +21,25 @@ import com.example.android.popularmovies.utility.SystemUtil;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListener,OnAsyncMoviesLoadCompleted {
 
     private static final String TAG = MoviesActivity.class.getSimpleName();
-    private RecyclerView mRecyclerView;
     private MoviesAdaptor mMoviesAdapter;
-    private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
+    @BindView(R.id.recyclerview_movies) RecyclerView mRecyclerView;
+    @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
         setTitle(R.string.movie_list_title);
+        //To use @BindView and other annotations.
+        ButterKnife.bind(this);
         int numberOfGridColumns;
-
 
         /**
          * This value decides how many columns should be displayed in the RecyclerView's Grid.
@@ -54,14 +58,8 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
          * Create RecyclerView and set its Layout to GridView using LayoutManager.
          */
         GridLayoutManager glm = new GridLayoutManager(this,numberOfGridColumns);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
         mRecyclerView.setLayoutManager(glm);
         mRecyclerView.setHasFixedSize(false);
-
-        /**
-         * Create error message textview to show any error occurred during the course of our action.
-         */
-        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
         /**
          * Set an adaptor to our RecyclerView,Adaptor is the responsible to load the data to the view.
@@ -152,15 +150,10 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     @Override
     public void onMovieClickEvent(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("id", movie.getMovieID());
-        bundle.putString("poster_path", movie.getPosterPath());
-        bundle.putString("original_title", movie.getOriginalTitle());
-        bundle.putString("overview", movie.getPlotSynopsis());
-        bundle.putString("vote_average", movie.getUserRatings());
-        bundle.putString("release_date", movie.getReleaseDate());
-        //bundle.putInt("runtime",movie.getRunTime());
-        intent.putExtras(bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putInt("id", movie.getMovieID());
+//        intent.putExtras(bundle);
+        intent.putExtra("movie",movie);
         startActivity(intent);
 
     }

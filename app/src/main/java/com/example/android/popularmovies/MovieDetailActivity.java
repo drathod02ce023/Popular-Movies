@@ -15,32 +15,29 @@ import com.example.android.popularmovies.models.Movie;
 import com.example.android.popularmovies.utility.MoviesDBUtil;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDetailsLoadCompleted {
     private static final String TAG = MovieDetailActivity.class.getSimpleName();
-    private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
-    private LinearLayout layoutDetailLayout;
-    private TextView txtViewMovieTitle;
-    private TextView txtViewReleaseDate;
-    private TextView txtViewUserRating;
-    private TextView txtViewSynopsis;
-    private TextView txtViewDuration;
-    private ImageView txtViewMoviePoster;
+    @BindView(R.id.detailLayout) LinearLayout layoutDetailLayout;
+    @BindView(R.id.error_message_detail) TextView mErrorMessageDisplay;
+    @BindView(R.id.movieTitle) TextView txtViewMovieTitle;
+    @BindView(R.id.releaseDateDetail) TextView txtViewReleaseDate;
+    @BindView(R.id.userRatingsDetail) TextView txtViewUserRating;
+    @BindView(R.id.synopsisDetail) TextView txtViewSynopsis;
+    @BindView(R.id.durationDetail) TextView txtViewDuration;
+    @BindView(R.id.imgPosterDetail) ImageView txtViewMoviePoster;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
         setTitle(R.string.movie_detail_title);
-        txtViewMovieTitle = (TextView)findViewById(R.id.movieTitle);
-        txtViewMoviePoster = (ImageView)findViewById(R.id.imgPosterDetail);
-        txtViewReleaseDate = (TextView)findViewById(R.id.releaseDateDetail);
-        txtViewUserRating = (TextView)findViewById(R.id.userRatingsDetail);
-        txtViewSynopsis = (TextView)findViewById(R.id.synopsisDetail);
-        txtViewDuration = (TextView)findViewById(R.id.durationDetail);
+        //To bind @BindView and other annotations.
+        ButterKnife.bind(this);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator_detail);
-        mErrorMessageDisplay = (TextView) findViewById(R.id.error_message_detail);
-        layoutDetailLayout = (LinearLayout)findViewById(R.id.detailLayout);
-
         //Load Movie Detail Information
         LoadMovieDetail(getIntent());
 
@@ -54,8 +51,8 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         if(intent == null){
             return;
         }
-        Bundle bundle = intent.getExtras();
-        int movieid = bundle.getInt("id");
+        Movie movie =  (Movie)intent.getParcelableExtra("movie");
+        int movieid = movie.getMovieID();
         new AsyncMovieDetailsLoader(getApplicationContext(),this).execute(String.valueOf(movieid));
     }
 
@@ -77,7 +74,7 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         txtViewReleaseDate.setText(releaseDate);
         //Poster
         String fullPosterPath = MoviesDBUtil.getPosterURL(posterPath,this);
-        Picasso.with(this).load(fullPosterPath).into(txtViewMoviePoster);
+        Picasso.with(this).load(fullPosterPath).placeholder(R.mipmap.ic_launcher).into(txtViewMoviePoster);
         //Duration
         txtViewDuration.setText(runtime);
         //UserRatings
