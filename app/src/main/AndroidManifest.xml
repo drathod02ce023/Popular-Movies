@@ -21,6 +21,11 @@
         <activity android:name=".MovieDetailActivity" android:parentActivityName=".MoviesActivity">
 
         </activity>
+        <provider
+            android:name=".data.FavMoviesContentProvider"
+            android:authorities="@string/content_authority"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

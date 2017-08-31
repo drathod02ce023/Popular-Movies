@@ -70,13 +70,16 @@
                         android:layout_height="wrap_content"
                         android:textSize="12sp" />
 
-                    <Button
+                    <ToggleButton
+                        android:id="@+id/btnFavUnFav"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:background="@android:color/holo_blue_light"
-                        android:text="@string/mark_favourite"
+                        android:textOn="@string/mark_unfavourite"
+                        android:textOff="@string/mark_favourite"
                         android:textColor="@android:color/white"
+                        android:onClick="markFavUnFav"
                         android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
