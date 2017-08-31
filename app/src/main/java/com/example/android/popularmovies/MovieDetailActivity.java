@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -55,6 +56,11 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator_detail);
         //Load Movie Detail Information
         LoadMovieDetail(getIntent());
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
 
     }
 
@@ -142,7 +148,7 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
      *
      */
     private void checkIfMovieIsFavorite(){
-getSupportLoaderManager().initLoader(ID_CURSORLOADER_FAVMOVIES2,null,this);
+        getSupportLoaderManager().initLoader(ID_CURSORLOADER_FAVMOVIES2,null,this);
     }
     /**
      * Mark movie favourite or unfavourite
@@ -222,11 +228,11 @@ getSupportLoaderManager().initLoader(ID_CURSORLOADER_FAVMOVIES2,null,this);
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         if(data.getCount() == 0){
             //Movie is not favorite (change button state to "Mark as favorite")
-            btnFavUnFav.setChecked(true);
+            btnFavUnFav.setChecked(false);
         }
         else{
             //Movie is favorite (change button state to "mark as unfavorite")
-            btnFavUnFav.setChecked(false);
+            btnFavUnFav.setChecked(true);
         }
     }
 

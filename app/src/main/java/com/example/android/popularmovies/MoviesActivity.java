@@ -36,6 +36,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     private MoviesAdaptor mMoviesAdapter;
     private ProgressBar mLoadingIndicator;
     public static final int ID_CURSORLOADER_FAVMOVIES = 3017;
+    private static int currentSortId = R.id.sortPopular;
     @BindView(R.id.recyclerview_movies) RecyclerView mRecyclerView;
     @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
 
@@ -80,10 +81,13 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
          */
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-        /**
-         * Initial load
-         */
-        loadPopularMovies();
+        loadMovies(currentSortId);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("currentSort",currentSortId);
     }
 
     @Override
@@ -95,7 +99,16 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        currentSortId = item.getItemId();
+        loadMovies(currentSortId);
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     *
+     * @param id
+     */
+    private void loadMovies(int id){
         switch (id){
             case R.id.sortPopular:
                 loadPopularMovies();
@@ -107,9 +120,8 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
                 loadFavouriteMovies();
                 break;
             default:
-                return false;
+                return;
         }
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -228,6 +240,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         Movie movie;
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         if(data.getCount() == 0){
+            mMoviesAdapter.setData(null);
             return;
         }
         for(int i =0;i<data.getCount();i++){
