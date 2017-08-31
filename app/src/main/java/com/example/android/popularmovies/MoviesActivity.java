@@ -2,7 +2,11 @@ package com.example.android.popularmovies;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,21 +18,24 @@ import android.widget.TextView;
 
 import com.example.android.popularmovies.adaptors.MoviesAdaptor;
 import com.example.android.popularmovies.asynctasks.AsyncMoviesLoader;
+import com.example.android.popularmovies.data.FavMoviesContract;
 import com.example.android.popularmovies.interfaces.OnAsyncMoviesLoadCompleted;
 import com.example.android.popularmovies.models.Movie;
 import com.example.android.popularmovies.utility.MoviesDBUtil;
 import com.example.android.popularmovies.utility.SystemUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListener,OnAsyncMoviesLoadCompleted {
+public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListener,OnAsyncMoviesLoadCompleted, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = MoviesActivity.class.getSimpleName();
     private MoviesAdaptor mMoviesAdapter;
     private ProgressBar mLoadingIndicator;
+    public static final int ID_CURSORLOADER_FAVMOVIES = 3017;
     @BindView(R.id.recyclerview_movies) RecyclerView mRecyclerView;
     @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
 
@@ -96,6 +103,9 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
             case R.id.sortRating:
                 loadTopRatedMovies();
                 break;
+            case R.id.sortFavourite:
+                loadFavouriteMovies();
+                break;
             default:
                 return false;
         }
@@ -124,6 +134,13 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
             return;
         }
         new AsyncMoviesLoader(getApplicationContext(),this).execute(MoviesDBUtil.TOPRATED);
+    }
+
+    /**
+     * Load favourite movies from database through ContentProvider using Cursorloader
+     */
+    private void loadFavouriteMovies(){
+        getSupportLoaderManager().initLoader(ID_CURSORLOADER_FAVMOVIES,null,this);
     }
 
     /**
@@ -174,5 +191,65 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         } else {
             showErrorMessage(getString(R.string.error_message));
         }
+    }
+
+    //Cursor Loader to get favourite movies from database.
+
+    /**
+     *
+     * @param loaderId
+     * @param args
+     * @return
+     */
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+        switch (loaderId) {
+
+            case ID_CURSORLOADER_FAVMOVIES:
+                return new CursorLoader(this, FavMoviesContract.FavMoviesEntry.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null);
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + loaderId);
+        }
+    }
+
+    /**
+     *
+     * @param loader
+     * @param data
+     */
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        List<Movie> lstMovies = new ArrayList<Movie>();
+        Movie movie;
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        if(data.getCount() == 0){
+            return;
+        }
+        for(int i =0;i<data.getCount();i++){
+            if(data.moveToPosition(i)){
+                movie = new Movie();
+                movie.setMovieID(data.getInt(FavMoviesContract.FavMoviesEntry.INDEX_MOVIEID));
+                movie.setPosterPath(data.getString(FavMoviesContract.FavMoviesEntry.INDEX_POSTERPATH));
+                //As of now only these two columns are required.
+                lstMovies.add(movie);
+            }
+        }
+
+        if (lstMovies != null) {
+            showMoviesDataView();
+            mMoviesAdapter.setData(lstMovies);
+        } else {
+            showErrorMessage(getString(R.string.error_message));
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mMoviesAdapter.setData(null);
     }
 }

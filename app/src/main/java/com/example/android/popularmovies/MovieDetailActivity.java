@@ -2,8 +2,13 @@ package com.example.android.popularmovies;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,9 +29,10 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDetailsLoadCompleted {
+public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDetailsLoadCompleted,LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = MovieDetailActivity.class.getSimpleName();
     private ProgressBar mLoadingIndicator;
+    public static final int ID_CURSORLOADER_FAVMOVIES2 = 3018;
     Movie movieDetail;
     @BindView(R.id.detailLayout) LinearLayout layoutDetailLayout;
     @BindView(R.id.error_message_detail) TextView mErrorMessageDisplay;
@@ -126,11 +132,18 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
             movieDetail = movie;
             showMoviesDataView();
             setData();
+            checkIfMovieIsFavorite();
         } else {
             showErrorMessage();
         }
     }
 
+    /**
+     *
+     */
+    private void checkIfMovieIsFavorite(){
+getSupportLoaderManager().initLoader(ID_CURSORLOADER_FAVMOVIES2,null,this);
+    }
     /**
      * Mark movie favourite or unfavourite
      * @param view
@@ -142,6 +155,7 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         }
         else{
             //Mark As UnFavourite (Delete record to SQLite database).
+            markMovieUnFavourite();
         }
     }
 
@@ -158,8 +172,66 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         cv.put(FavMoviesContract.FavMoviesEntry.COL_TITLE,movieDetail.getOriginalTitle());
         cv.put(FavMoviesContract.FavMoviesEntry.COL_USERRATINGS,movieDetail.getUserRatings());
         cv.put(FavMoviesContract.FavMoviesEntry.COL_POSTER,poster);
+        cv.put(FavMoviesContract.FavMoviesEntry.COL_POSTERPATH,movieDetail.getPosterPath());
         //Insert favourite movie detail to favMovie database using ContentResolver.
          ProviderUtil.insert(getApplicationContext(),FavMoviesContract.FavMoviesEntry.buildUriWithMovieId(movieDetail.getMovieID()),cv);
+
+    }
+    /**
+     * Mark movie as Unfavourite and delete it from movie database.
+     */
+    private void markMovieUnFavourite(){
+        Uri uri = FavMoviesContract.FavMoviesEntry.buildUriWithMovieId(movieDetail.getMovieID());
+        String selection = FavMoviesContract.FavMoviesEntry.COL_MOVIEID + " = ?";
+        String[] selectionArgs = new String[]{Integer.toString(movieDetail.getMovieID())};
+        ProviderUtil.delete(getApplicationContext(),uri,selection,selectionArgs);
+    }
+
+    //Cursor Loader to check if movie is in the favorite list.
+    /**
+     *
+     * @param loaderId
+     * @param args
+     * @return
+     */
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+        switch (loaderId) {
+
+            case ID_CURSORLOADER_FAVMOVIES2:
+                String selection = FavMoviesContract.FavMoviesEntry.COL_MOVIEID + " = ?";
+                String[] selectionArgs = new String[]{Integer.toString(movieDetail.getMovieID())};
+                return new CursorLoader(this, FavMoviesContract.FavMoviesEntry.buildUriWithMovieId(movieDetail.getMovieID()),
+                        null,
+                        selection,
+                        selectionArgs,
+                        null);
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + loaderId);
+        }
+    }
+
+    /**
+     *
+     * @param loader
+     * @param data
+     */
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        if(data.getCount() == 0){
+            //Movie is not favorite (change button state to "Mark as favorite")
+            btnFavUnFav.setChecked(true);
+        }
+        else{
+            //Movie is favorite (change button state to "mark as unfavorite")
+            btnFavUnFav.setChecked(false);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 }

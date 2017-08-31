@@ -47,7 +47,13 @@ public class FavMoviesContract {
         public static final String COL_PLOTSYNOPSIS = "synopsis";
         public static final String COL_RELEASEDATE = "releasedate";
         public static final String COL_USERRATINGS = "userratings";
+        public static final String COL_POSTERPATH = "posterpath";
         public static final String COL_POSTER = "poster";
+
+        //COLUMN INDEX (See the column position in dbhelper class)
+        public static final int INDEX_MOVIEID = 1;
+        public static final int INDEX_POSTERPATH = 7;
+
 
     }
 

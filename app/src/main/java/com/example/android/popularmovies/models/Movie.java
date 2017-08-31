@@ -13,6 +13,9 @@ import java.util.List;
 public class Movie implements Parcelable {
 
 
+    public Movie(){
+
+    }
     private Movie(Parcel in) {
         MovieID = in.readInt();
         RunTime = in.readInt();
@@ -23,6 +26,14 @@ public class Movie implements Parcelable {
         UserRatings = in.readString();
         //lstVideo = in.readArrayList(new ArrayList<Video>().getClass().getClassLoader());
         //lstReview = in.readArrayList(new ArrayList<Review>().getClass().getClassLoader());
+    }
+
+    public void setMovieID(int movieID) {
+        MovieID = movieID;
+    }
+
+    public void setPosterPath(String posterPath) {
+        PosterPath = posterPath;
     }
 
     @SerializedName("id")

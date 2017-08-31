@@ -22,4 +22,15 @@ public class ProviderUtil {
         return context.getContentResolver().insert(uri,cv);
     }
 
+    /**
+     *
+     * @param context
+     * @param uri
+     * @param selection
+     * @param selectionArgs
+     * @return
+     */
+    public static int delete(Context context,Uri uri,String selection, String[] selectionArgs){
+        return context.getContentResolver().delete(uri,selection,selectionArgs);
+    }
 }

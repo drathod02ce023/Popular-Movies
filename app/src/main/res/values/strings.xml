@@ -11,6 +11,7 @@
     <!--Menu Section-->
     <string name="menu_sort_popular">SortByPopularity</string>
     <string name="menu_sort_rating">SortByRatings</string>
+    <string name="menu_sort_favourites">ShowFavourites</string>
 
     <!-- Activity Titles-->
     <string name="movie_list_title">Movie List</string>

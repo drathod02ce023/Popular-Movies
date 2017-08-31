@@ -147,6 +147,7 @@ public class FavMoviesContentProvider extends ContentProvider {
         }
         if (numRowsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
+            Toast.makeText(getContext(),"Marked as Unfavourite",Toast.LENGTH_LONG).show();
         }
         return numRowsDeleted;
     }
