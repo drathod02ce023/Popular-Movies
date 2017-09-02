@@ -92,32 +92,6 @@
                 android:paddingStart="10dp"
                 android:paddingTop="10dp"
                 android:textSize="15sp" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray">
-            </View>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingStart="10dp"
-                android:layout_gravity="left"
-                android:paddingTop="10dp"
-                android:text="@string/trailers"
-                android:textSize="20sp" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rcvTrailers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp">
-
-            </android.support.v7.widget.RecyclerView>
-
         </LinearLayout>
 
         <TextView

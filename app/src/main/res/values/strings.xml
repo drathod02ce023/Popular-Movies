@@ -20,6 +20,7 @@
     <!-- Screen lables -->
     <string name="mark_favourite">MARK AS \nFAVOURITE</string>
     <string name="mark_unfavourite">MARK AS \nUNFAVOURITE</string>
+    <string name="trailers">Trailers</string>
     <!-- -->
     <string name="content_description">Popular Movie</string>
 

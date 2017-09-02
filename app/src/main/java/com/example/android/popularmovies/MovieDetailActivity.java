@@ -11,17 +11,22 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.example.android.popularmovies.adaptors.MovieDetailAdaptor;
 import com.example.android.popularmovies.asynctasks.AsyncMovieDetailsLoader;
 import com.example.android.popularmovies.data.FavMoviesContract;
 import com.example.android.popularmovies.interfaces.OnAsyncDetailsLoadCompleted;
 import com.example.android.popularmovies.models.Movie;
+import com.example.android.popularmovies.models.Video;
 import com.example.android.popularmovies.utility.ImageUtil;
 import com.example.android.popularmovies.utility.MoviesDBUtil;
 import com.example.android.popularmovies.utility.ProviderUtil;
@@ -30,11 +35,14 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDetailsLoadCompleted,LoaderManager.LoaderCallbacks<Cursor> {
+public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDetailsLoadCompleted,LoaderManager.LoaderCallbacks<Cursor>,MovieDetailAdaptor.PlayButtonClickListener {
     private static final String TAG = MovieDetailActivity.class.getSimpleName();
     private ProgressBar mLoadingIndicator;
     public static final int ID_CURSORLOADER_FAVMOVIES2 = 3018;
     Movie movieDetail;
+    MovieDetailAdaptor movieDetailAdaptor;
+    @BindView(R.id.rcvTrailers)
+    RecyclerView mrcvTrailers;
     @BindView(R.id.detailLayout) LinearLayout layoutDetailLayout;
     @BindView(R.id.error_message_detail) TextView mErrorMessageDisplay;
     @BindView(R.id.movieTitle) TextView txtViewMovieTitle;
@@ -45,7 +53,6 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
     @BindView(R.id.imgPosterDetail) ImageView imgViewMoviePoster;
     @BindView(R.id.btnFavUnFav) ToggleButton btnFavUnFav;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +61,14 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         //To bind @BindView and other annotations.
         ButterKnife.bind(this);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator_detail);
+
+        //RecycleView for trailers
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        mrcvTrailers.setLayoutManager(llm);
+        mrcvTrailers.setHasFixedSize(true);
+
+        movieDetailAdaptor = new MovieDetailAdaptor(this,this);
+        mrcvTrailers.setAdapter(movieDetailAdaptor);
         //Load Movie Detail Information
         LoadMovieDetail(getIntent());
     }
@@ -61,7 +76,6 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
-
     }
 
     /**
@@ -139,6 +153,8 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
             showMoviesDataView();
             setData();
             checkIfMovieIsFavorite();
+            //Call an Adaptor method to display trailers.
+            movieDetailAdaptor.setData(movieDetail);
         } else {
             showErrorMessage();
         }
@@ -239,5 +255,10 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void onPlayButtonClick(Video video) {
+        Toast.makeText(this,video.getVideoName(),Toast.LENGTH_LONG).show();
     }
 }
