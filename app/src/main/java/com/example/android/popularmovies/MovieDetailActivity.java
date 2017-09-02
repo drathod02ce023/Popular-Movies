@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.android.popularmovies.adaptors.MovieDetailAdaptor;
@@ -41,6 +40,7 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
     public static final int ID_CURSORLOADER_FAVMOVIES2 = 3018;
     Movie movieDetail;
     MovieDetailAdaptor movieDetailAdaptor;
+
     @BindView(R.id.rcvTrailers)
     RecyclerView mrcvTrailers;
     @BindView(R.id.detailLayout) LinearLayout layoutDetailLayout;
@@ -64,11 +64,13 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
 
         //RecycleView for trailers
         LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
         mrcvTrailers.setLayoutManager(llm);
-        mrcvTrailers.setHasFixedSize(true);
+        mrcvTrailers.setHasFixedSize(false);
 
         movieDetailAdaptor = new MovieDetailAdaptor(this,this);
         mrcvTrailers.setAdapter(movieDetailAdaptor);
+
         //Load Movie Detail Information
         LoadMovieDetail(getIntent());
     }
@@ -154,7 +156,9 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
             setData();
             checkIfMovieIsFavorite();
             //Call an Adaptor method to display trailers.
+            //movieDetailAdaptor.setData(movieDetail);
             movieDetailAdaptor.setData(movieDetail);
+
         } else {
             showErrorMessage();
         }
@@ -259,6 +263,15 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
 
     @Override
     public void onPlayButtonClick(Video video) {
-        Toast.makeText(this,video.getVideoName(),Toast.LENGTH_LONG).show();
+        //Toast.makeText(this,video.getVideoName(),Toast.LENGTH_LONG).show();
+        // your video id
+        // for instance a video link: http://www.youtube.com/watch?v=58f1430ac3a3681a52004703
+        //String videoId = video.getVideoId();
+        String videoId = "twZggnNbFqo";
+        //Toast.makeText(this,video.getVideoId(),Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + videoId));
+        intent.putExtra("VIDEO_ID", videoId);
+        startActivity(intent);
     }
 }
