@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -37,21 +36,31 @@ import butterknife.ButterKnife;
 public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDetailsLoadCompleted,LoaderManager.LoaderCallbacks<Cursor>,MovieDetailAdaptor.PlayButtonClickListener {
     private static final String TAG = MovieDetailActivity.class.getSimpleName();
     private ProgressBar mLoadingIndicator;
-    public static final int ID_CURSORLOADER_FAVMOVIES2 = 3018;
-    Movie movieDetail;
-    MovieDetailAdaptor movieDetailAdaptor;
+    private static final int ID_CURSORLOADER_FAVMOVIES2 = 3018;
+    private Movie movieDetail;
+    private MovieDetailAdaptor movieDetailAdaptor;
 
     @BindView(R.id.rcvTrailers)
+
     RecyclerView mrcvTrailers;
-    @BindView(R.id.detailLayout) LinearLayout layoutDetailLayout;
-    @BindView(R.id.error_message_detail) TextView mErrorMessageDisplay;
-    @BindView(R.id.movieTitle) TextView txtViewMovieTitle;
-    @BindView(R.id.releaseDateDetail) TextView txtViewReleaseDate;
-    @BindView(R.id.userRatingsDetail) TextView txtViewUserRating;
-    @BindView(R.id.synopsisDetail) TextView txtViewSynopsis;
-    @BindView(R.id.durationDetail) TextView txtViewDuration;
-    @BindView(R.id.imgPosterDetail) ImageView imgViewMoviePoster;
-    @BindView(R.id.btnFavUnFav) ToggleButton btnFavUnFav;
+    @BindView(R.id.detailLayout)
+     LinearLayout layoutDetailLayout;
+    @BindView(R.id.error_message_detail)
+     TextView mErrorMessageDisplay;
+    @BindView(R.id.movieTitle)
+     TextView txtViewMovieTitle;
+    @BindView(R.id.releaseDateDetail)
+     TextView txtViewReleaseDate;
+    @BindView(R.id.userRatingsDetail)
+     TextView txtViewUserRating;
+    @BindView(R.id.synopsisDetail)
+     TextView txtViewSynopsis;
+    @BindView(R.id.durationDetail)
+     TextView txtViewDuration;
+    @BindView(R.id.imgPosterDetail)
+     ImageView imgViewMoviePoster;
+    @BindView(R.id.btnFavUnFav)
+     ToggleButton btnFavUnFav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,18 +76,12 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mrcvTrailers.setLayoutManager(llm);
         mrcvTrailers.setHasFixedSize(false);
-        //smrcvTrailers.setNestedScrollingEnabled(false);
 
         movieDetailAdaptor = new MovieDetailAdaptor(this,this);
         mrcvTrailers.setAdapter(movieDetailAdaptor);
 
         //Load Movie Detail Information
         LoadMovieDetail(getIntent());
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
     }
 
     /**
@@ -89,7 +92,7 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         if(intent == null){
             return;
         }
-        Movie movie =  (Movie)intent.getParcelableExtra("movie");
+        Movie movie =  intent.getParcelableExtra("movie");
         int movieid = movie.getMovieID();
         new AsyncMovieDetailsLoader(getApplicationContext(),this).execute(String.valueOf(movieid));
     }
@@ -125,7 +128,7 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
      */
     private void showMoviesDataView() {
         /* First, make sure the error is invisible */
-        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        mErrorMessageDisplay.setVisibility(View.GONE);
         /* Then, make sure the weather data is visible */
         layoutDetailLayout.setVisibility(View.VISIBLE);
     }
@@ -135,7 +138,7 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
      */
     private void showErrorMessage() {
         /* First, hide the currently visible data */
-        layoutDetailLayout.setVisibility(View.INVISIBLE);
+        layoutDetailLayout.setVisibility(View.GONE);
         /* Then, show the error */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }

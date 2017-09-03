@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
@@ -12,14 +13,14 @@ import android.widget.Toast;
  * Created by dhaval on 2017/08/31.
  * Provide methods to perform database operations on movie database.
  */
-
+@SuppressWarnings("ConstantConditions")
 public class FavMoviesContentProvider extends ContentProvider {
 
     //Unique identifier for URI (content://com.example.android.popularmovies/movies)
-    public static final int CODE_MOVIES = 100;
+    private static final int CODE_MOVIES = 100;
 
     //Unique identifier for URI (content://com.example.android.popularmovies/movies/{movieid})
-    public static final int CODE_MOVIEID = 101;
+    private static final int CODE_MOVIEID = 101;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -29,7 +30,7 @@ public class FavMoviesContentProvider extends ContentProvider {
  *
      * @return
      */
-    public static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
 
         /*
          * All paths added to the UriMatcher have a corresponding code to return when a match is
@@ -66,7 +67,7 @@ public class FavMoviesContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor cursor;
         int uriCode = sUriMatcher.match(uri);
         switch (uriCode){
@@ -105,13 +106,13 @@ public class FavMoviesContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         return null;
     }
 
     @Nullable
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         int uriCode = sUriMatcher.match(uri);
         long autorowid;
         switch (uriCode){
@@ -132,7 +133,7 @@ public class FavMoviesContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         int uriCode = sUriMatcher.match(uri);
         int numRowsDeleted;
         switch (uriCode){
@@ -153,7 +154,7 @@ public class FavMoviesContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
     }
 }

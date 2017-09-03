@@ -14,8 +14,8 @@ import java.util.List;
  */
  public class AsyncMoviesLoader extends AsyncTask<String,Void,List<Movie>> {
 
-    private OnAsyncMoviesLoadCompleted onAsyncMoviesLoadCompleted;
-    private Context context ;
+    private final OnAsyncMoviesLoadCompleted onAsyncMoviesLoadCompleted;
+    private final Context context ;
 
     public  AsyncMoviesLoader(Context context, OnAsyncMoviesLoadCompleted onAsyncMoviesLoadCompleted){
         this.context = context;

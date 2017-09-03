@@ -35,10 +35,12 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     private static final String TAG = MoviesActivity.class.getSimpleName();
     private MoviesAdaptor mMoviesAdapter;
     private ProgressBar mLoadingIndicator;
-    public static final int ID_CURSORLOADER_FAVMOVIES = 3017;
+    private static final int ID_CURSORLOADER_FAVMOVIES = 3017;
     private static int currentSortId = R.id.sortPopular;
-    @BindView(R.id.recyclerview_movies) RecyclerView mRecyclerView;
-    @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
+    @BindView(R.id.recyclerview_movies)
+     RecyclerView mRecyclerView;
+    @BindView(R.id.tv_error_message_display)
+     TextView mErrorMessageDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         GridLayoutManager glm = new GridLayoutManager(this,numberOfGridColumns);
         mRecyclerView.setLayoutManager(glm);
         mRecyclerView.setHasFixedSize(false);
+
 
         /**
          * Set an adaptor to our RecyclerView,Adaptor is the responsible to load the data to the view.
@@ -120,7 +123,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
                 loadFavouriteMovies();
                 break;
             default:
-                return;
+                throw new UnsupportedOperationException("Sorting is not defind.");
         }
     }
 
@@ -236,9 +239,9 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
      */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        List<Movie> lstMovies = new ArrayList<Movie>();
+        List<Movie> lstMovies = new ArrayList<>();
         Movie movie;
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        mLoadingIndicator.setVisibility(View.GONE);
         if(data.getCount() == 0){
             mMoviesAdapter.setData(null);
             return;
@@ -253,7 +256,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
             }
         }
 
-        if (lstMovies != null) {
+        if (lstMovies.size()>0) {
             showMoviesDataView();
             mMoviesAdapter.setData(lstMovies);
         } else {

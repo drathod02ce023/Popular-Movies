@@ -10,12 +10,12 @@ import com.example.android.popularmovies.data.FavMoviesContract.FavMoviesEntry;
  * Database Helper class.
  */
 
-public class FavMoviesDBHelper extends SQLiteOpenHelper {
+ class FavMoviesDBHelper extends SQLiteOpenHelper {
     /*
       * This is the name of our database. Database names should be descriptive and end with the
       * .db extension.
       */
-    public static final String DATABASE_NAME = "movies.db";
+    private static final String DATABASE_NAME = "movies.db";
 
 
     private static final int DATABASE_VERSION = 2;

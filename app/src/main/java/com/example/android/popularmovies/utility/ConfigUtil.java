@@ -12,7 +12,7 @@ import java.util.Properties;
  * Class to read configuration and properties
  */
 
-public class ConfigUtil {
+ class ConfigUtil {
 
     public static final String url_popular_movie = "url_popular_movie";
     public static final String url_toprated_movie = "url_toprated_movie";

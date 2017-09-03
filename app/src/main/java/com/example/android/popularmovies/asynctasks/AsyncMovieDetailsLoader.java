@@ -9,8 +9,8 @@ import com.example.android.popularmovies.utility.MoviesDBUtil;
 
 public class AsyncMovieDetailsLoader extends AsyncTask<String,Void,Movie>{
 
-    private OnAsyncDetailsLoadCompleted onAsyncDetailsLoadCompleted;
-    private Context context ;
+    private final OnAsyncDetailsLoadCompleted onAsyncDetailsLoadCompleted;
+    private final Context context ;
 
     public  AsyncMovieDetailsLoader(Context context, OnAsyncDetailsLoadCompleted onAsyncDetailsLoadCompleted){
         this.context = context;

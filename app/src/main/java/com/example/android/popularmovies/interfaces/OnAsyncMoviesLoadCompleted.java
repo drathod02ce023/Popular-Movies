@@ -10,6 +10,6 @@ import java.util.List;
  */
 
 public interface OnAsyncMoviesLoadCompleted {
-    public void beforeProcessStart();
-    public void afterProcessEnd(List<Movie> lstMovie);
+     void beforeProcessStart();
+     void afterProcessEnd(List<Movie> lstMovie);
 }

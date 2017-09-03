@@ -28,7 +28,7 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
     final private MovieDetailAdaptor.PlayButtonClickListener mPlayButtonClickListener;
     private static final int VIEW_TRAILER = 1;
     private static final int VIEW_REVIEW = 2;
-    int reviewno = 0;
+    private int reviewno = 0;
 
     public MovieDetailAdaptor(Context context,MovieDetailAdaptor.PlayButtonClickListener playButtonClickListener ) {
         this.context = context;
@@ -49,6 +49,36 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
         public TrailerViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+        }
+
+        /**
+         * Bind data and events to view holder controls
+         * @param position
+         * @param viewId
+         */
+        private void bind(final int position,int viewId){
+            int TrailerNumber = position + 1; //Starts with 1 not 0
+            String text = "Trailer " + Integer.toString(TrailerNumber);
+
+            switch (viewId){
+                case VIEW_TRAILER:{
+                    tvTrailer.setText(text);
+                    imgPlayButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mPlayButtonClickListener.onPlayButtonClick(movie.getLstVideo().get(position));
+                        }
+                    });
+                    break;
+                }
+                case VIEW_REVIEW:{
+                    if(movie.getLstReview().size() > reviewno) {
+                        tvReview.setText(movie.getLstReview().get(reviewno).getReviewContent());
+                        reviewno = reviewno + 1;
+                    }
+                }
+            }
+
         }
     }
 
@@ -75,28 +105,8 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
 
     @Override
     public void onBindViewHolder(MovieDetailAdaptor.TrailerViewHolder holder, final int position) {
-        int TrailerNumber = position + 1; //Starts with 1 not 0
-        String text = "Trailer " + Integer.toString(TrailerNumber);
 
-        switch (getItemViewType(position)){
-            case VIEW_TRAILER:{
-                holder.tvTrailer.setText(text);
-                holder.imgPlayButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPlayButtonClickListener.onPlayButtonClick(movie.getLstVideo().get(position));
-                    }
-                });
-                break;
-            }
-            case VIEW_REVIEW:{
-                if(movie.getLstReview().size() > reviewno) {
-                    holder.tvReview.setText(movie.getLstReview().get(reviewno).getReviewContent());
-                    reviewno = reviewno + 1;
-                }
-            }
-        }
-
+        holder.bind(position,getItemViewType(position));
 
     }
 
@@ -112,7 +122,7 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
      * Event handler interface fro play button click
      */
     public interface PlayButtonClickListener{
-        public void onPlayButtonClick(Video video);
+         void onPlayButtonClick(Video video);
     }
 
     /**

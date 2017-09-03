@@ -17,11 +17,11 @@ public class FavMoviesContract {
      * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
      * the content provider.
      */
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
 
     public static final String PATH_MOVIES = "movies";
-    public static final String PATH_MOVIEID = "movieid";
+
 
     /* Inner class that defines the table contents of the favMovies table */
     public static final class FavMoviesEntry implements BaseColumns {

@@ -8,6 +8,6 @@ import com.example.android.popularmovies.models.Movie;
  */
 
 public interface OnAsyncDetailsLoadCompleted {
-    public void beforeProcessStart();
-    public void afterProcessEnd(Movie movie);
+     void beforeProcessStart();
+     void afterProcessEnd(Movie movie);
 }
