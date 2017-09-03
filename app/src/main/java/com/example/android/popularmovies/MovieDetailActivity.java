@@ -67,6 +67,7 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mrcvTrailers.setLayoutManager(llm);
         mrcvTrailers.setHasFixedSize(false);
+        //smrcvTrailers.setNestedScrollingEnabled(false);
 
         movieDetailAdaptor = new MovieDetailAdaptor(this,this);
         mrcvTrailers.setAdapter(movieDetailAdaptor);

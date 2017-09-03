@@ -1,6 +1,7 @@
 package com.example.android.popularmovies.adaptors;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,9 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
     private Movie movie;
     final private Context context;
     final private MovieDetailAdaptor.PlayButtonClickListener mPlayButtonClickListener;
+    private static final int VIEW_TRAILER = 1;
+    private static final int VIEW_REVIEW = 2;
+    int reviewno = 0;
 
     public MovieDetailAdaptor(Context context,MovieDetailAdaptor.PlayButtonClickListener playButtonClickListener ) {
         this.context = context;
@@ -34,10 +38,14 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
      * Cache of the children views for a movies list item.
      */
     public class TrailerViewHolder extends RecyclerView.ViewHolder {
+        @Nullable
         @BindView(R.id.imgPlayButton)
         ImageView imgPlayButton;
+        @Nullable
         @BindView(R.id.tvTrailer)
         TextView tvTrailer;
+        @Nullable
+        @BindView(R.id.tvReview)TextView tvReview;
         public TrailerViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
@@ -46,7 +54,20 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
 
     @Override
     public MovieDetailAdaptor.TrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        int layoutid = R.layout.movie_trailer;
+        int layoutid;
+        switch(viewType){
+            case VIEW_TRAILER:{
+                layoutid = R.layout.movie_trailer;
+                break;
+            }
+            case VIEW_REVIEW:{
+                layoutid = R.layout.movie_reviews;
+                break;
+            }
+            default:{
+                throw new UnsupportedOperationException("View not supported");
+            }
+        }
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(layoutid,parent,false);
         return new TrailerViewHolder(view);
@@ -56,13 +77,27 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
     public void onBindViewHolder(MovieDetailAdaptor.TrailerViewHolder holder, final int position) {
         int TrailerNumber = position + 1; //Starts with 1 not 0
         String text = "Trailer " + Integer.toString(TrailerNumber);
-        holder.tvTrailer.setText(text);
-        holder.imgPlayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPlayButtonClickListener.onPlayButtonClick(movie.getLstVideo().get(position));
+
+        switch (getItemViewType(position)){
+            case VIEW_TRAILER:{
+                holder.tvTrailer.setText(text);
+                holder.imgPlayButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mPlayButtonClickListener.onPlayButtonClick(movie.getLstVideo().get(position));
+                    }
+                });
+                break;
             }
-        });
+            case VIEW_REVIEW:{
+                if(movie.getLstReview().size() > reviewno) {
+                    holder.tvReview.setText(movie.getLstReview().get(reviewno).getReviewContent());
+                    reviewno = reviewno + 1;
+                }
+            }
+        }
+
+
     }
 
     @Override
@@ -70,7 +105,7 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
         if(movie == null){
             return 0;
         }
-        return movie.getLstVideo().size();
+        return movie.getLstVideo().size() + movie.getLstReview().size();
     }
 
     /**
@@ -87,5 +122,15 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
     public void setData(Movie movie){
         this.movie = movie;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(position < movie.getLstVideo().size()){
+            return VIEW_TRAILER;
+        }
+        else{
+            return VIEW_REVIEW;
+        }
     }
 }
