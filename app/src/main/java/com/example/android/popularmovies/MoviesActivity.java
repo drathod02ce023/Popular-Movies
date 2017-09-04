@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +23,7 @@ import com.example.android.popularmovies.interfaces.OnAsyncMoviesLoadCompleted;
 import com.example.android.popularmovies.models.Movie;
 import com.example.android.popularmovies.utility.MoviesDBUtil;
 import com.example.android.popularmovies.utility.SystemUtil;
+import com.example.android.popularmovies.views.StatefulRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +38,11 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     private ProgressBar mLoadingIndicator;
     private static final int ID_CURSORLOADER_FAVMOVIES = 3017;
     private static int currentSortId = R.id.sortPopular;
+    private Parcelable state;
+
+    //BindViews
     @BindView(R.id.recyclerview_movies)
-     RecyclerView mRecyclerView;
+    StatefulRecyclerView mRecyclerView;
     @BindView(R.id.tv_error_message_display)
      TextView mErrorMessageDisplay;
 
@@ -87,11 +91,6 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         loadMovies(currentSortId);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("currentSort",currentSortId);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -203,6 +202,8 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         if (lstMovies != null) {
             showMoviesDataView();
             mMoviesAdapter.setData(lstMovies);
+            //To maintain scroll position
+            mRecyclerView.restorePosition();
         } else {
             showErrorMessage(getString(R.string.error_message));
         }

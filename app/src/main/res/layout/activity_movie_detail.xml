@@ -8,7 +8,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/activity_movie_detail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:context="com.example.android.popularmovies.MovieDetailActivity">
 
@@ -112,11 +112,11 @@
                 android:text="@string/OtherDetails"
                 android:textSize="20sp" />
 
-            <android.support.v7.widget.RecyclerView
+            <com.example.android.popularmovies.views.StatefulRecyclerView
                 android:id="@+id/rcvTrailers"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="200dp">
+            </com.example.android.popularmovies.views.StatefulRecyclerView>
 
         </LinearLayout>
         <TextView

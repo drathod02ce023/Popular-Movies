@@ -11,7 +11,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +27,7 @@ import com.example.android.popularmovies.models.Video;
 import com.example.android.popularmovies.utility.ImageUtil;
 import com.example.android.popularmovies.utility.MoviesDBUtil;
 import com.example.android.popularmovies.utility.ProviderUtil;
+import com.example.android.popularmovies.views.StatefulRecyclerView;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -37,12 +37,13 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
     private static final String TAG = MovieDetailActivity.class.getSimpleName();
     private ProgressBar mLoadingIndicator;
     private static final int ID_CURSORLOADER_FAVMOVIES2 = 3018;
+    private static final String SAVED_LAYOUTMANAGER = "saved_layoutmanager";
     private Movie movieDetail;
     private MovieDetailAdaptor movieDetailAdaptor;
+    LinearLayoutManager mRecViewLayoutManager;
 
     @BindView(R.id.rcvTrailers)
-
-    RecyclerView mrcvTrailers;
+    StatefulRecyclerView mrcvTrailers;
     @BindView(R.id.detailLayout)
      LinearLayout layoutDetailLayout;
     @BindView(R.id.error_message_detail)
@@ -72,9 +73,9 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator_detail);
 
         //RecycleView for trailers
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        mrcvTrailers.setLayoutManager(llm);
+        mRecViewLayoutManager = new LinearLayoutManager(this);
+        mRecViewLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mrcvTrailers.setLayoutManager(mRecViewLayoutManager);
         mrcvTrailers.setHasFixedSize(false);
 
         movieDetailAdaptor = new MovieDetailAdaptor(this,this);
@@ -162,6 +163,8 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
             //Call an Adaptor method to display trailers.
             //movieDetailAdaptor.setData(movieDetail);
             movieDetailAdaptor.setData(movieDetail);
+            //To maintain scroll position
+            mrcvTrailers.restorePosition();
 
         } else {
             showErrorMessage();
@@ -272,10 +275,30 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         // for instance a video link: http://www.youtube.com/watch?v=58f1430ac3a3681a52004703
         //String videoId = video.getVideoId();
         String videoId = "twZggnNbFqo";
-        //Toast.makeText(this,video.getVideoId(),Toast.LENGTH_LONG).show();
+        Intent intent;
 
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + videoId));
+        if(isYouTubeInstalled()){
+             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + videoId));
+        }
+        else{
+             intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=" + videoId));
+        }
         intent.putExtra("VIDEO_ID", videoId);
         startActivity(intent);
+    }
+
+    /**
+     * Chceck if YouTube is installed
+     * @return
+     */
+    protected boolean isYouTubeInstalled() {
+        String packageName = "com.google.android.youtube";
+        Intent mIntent = getPackageManager().getLaunchIntentForPackage(packageName);
+        if (mIntent != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
