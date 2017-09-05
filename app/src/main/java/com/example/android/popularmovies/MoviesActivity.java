@@ -31,7 +31,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListener,OnAsyncMoviesLoadCompleted, LoaderManager.LoaderCallbacks<Cursor> {
+public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListener, OnAsyncMoviesLoadCompleted, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = MoviesActivity.class.getSimpleName();
     private MoviesAdaptor mMoviesAdapter;
@@ -44,7 +44,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     @BindView(R.id.recyclerview_movies)
     StatefulRecyclerView mRecyclerView;
     @BindView(R.id.tv_error_message_display)
-     TextView mErrorMessageDisplay;
+    TextView mErrorMessageDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,20 +58,19 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         /**
          * This value decides how many columns should be displayed in the RecyclerView's Grid.
          */
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
 
-             numberOfGridColumns = 2;
+            numberOfGridColumns = 2;
 
-        }
-        else{
-             numberOfGridColumns = 4;
+        } else {
+            numberOfGridColumns = 4;
 
         }
 
         /**
          * Create RecyclerView and set its Layout to GridView using LayoutManager.
          */
-        GridLayoutManager glm = new GridLayoutManager(this,numberOfGridColumns);
+        GridLayoutManager glm = new GridLayoutManager(this, numberOfGridColumns);
         mRecyclerView.setLayoutManager(glm);
         mRecyclerView.setHasFixedSize(false);
 
@@ -79,7 +78,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         /**
          * Set an adaptor to our RecyclerView,Adaptor is the responsible to load the data to the view.
          */
-        mMoviesAdapter = new MoviesAdaptor(MoviesActivity.this,this);
+        mMoviesAdapter = new MoviesAdaptor(MoviesActivity.this, this);
         mRecyclerView.setAdapter(mMoviesAdapter);
 
         /**
@@ -95,7 +94,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //Load Setting menu
-        getMenuInflater().inflate(R.menu.settings,menu);
+        getMenuInflater().inflate(R.menu.settings, menu);
         return true;
     }
 
@@ -107,11 +106,10 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     }
 
     /**
-     *
      * @param id
      */
-    private void loadMovies(int id){
-        switch (id){
+    private void loadMovies(int id) {
+        switch (id) {
             case R.id.sortPopular:
                 loadPopularMovies();
                 break;
@@ -129,32 +127,32 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     /**
      * Load Popular movies from DataSource using API Call
      */
-    private void loadPopularMovies(){
-        if(SystemUtil.isOnline(this)){
+    private void loadPopularMovies() {
+        if (SystemUtil.isOnline(this)) {
             String error = getString(R.string.newtork_error_message);
             showErrorMessage(error);
             return;
         }
-        new AsyncMoviesLoader(getApplicationContext(),this).execute(MoviesDBUtil.POPULAR);
+        new AsyncMoviesLoader(getApplicationContext(), this).execute(MoviesDBUtil.POPULAR);
     }
 
     /**
      * Load TopRated movies from DataSource using API Call
      */
-    private void loadTopRatedMovies(){
-        if(SystemUtil.isOnline(this)){
+    private void loadTopRatedMovies() {
+        if (SystemUtil.isOnline(this)) {
             String error = getString(R.string.newtork_error_message);
             showErrorMessage(error);
             return;
         }
-        new AsyncMoviesLoader(getApplicationContext(),this).execute(MoviesDBUtil.TOPRATED);
+        new AsyncMoviesLoader(getApplicationContext(), this).execute(MoviesDBUtil.TOPRATED);
     }
 
     /**
      * Load favourite movies from database through ContentProvider using Cursorloader
      */
-    private void loadFavouriteMovies(){
-        getSupportLoaderManager().initLoader(ID_CURSORLOADER_FAVMOVIES,null,this);
+    private void loadFavouriteMovies() {
+        getSupportLoaderManager().initLoader(ID_CURSORLOADER_FAVMOVIES, null, this);
     }
 
     /**
@@ -184,7 +182,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
 //        Bundle bundle = new Bundle();
 //        bundle.putInt("id", movie.getMovieID());
 //        intent.putExtras(bundle);
-        intent.putExtra("movie",movie);
+        intent.putExtra("movie", movie);
         startActivity(intent);
 
     }
@@ -212,7 +210,6 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     //Cursor Loader to get favourite movies from database.
 
     /**
-     *
      * @param loaderId
      * @param args
      * @return
@@ -234,7 +231,6 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
     }
 
     /**
-     *
      * @param loader
      * @param data
      */
@@ -243,12 +239,12 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         List<Movie> lstMovies = new ArrayList<>();
         Movie movie;
         mLoadingIndicator.setVisibility(View.GONE);
-        if(data.getCount() == 0){
+        if (data.getCount() == 0) {
             mMoviesAdapter.setData(null);
             return;
         }
-        for(int i =0;i<data.getCount();i++){
-            if(data.moveToPosition(i)){
+        for (int i = 0; i < data.getCount(); i++) {
+            if (data.moveToPosition(i)) {
                 movie = new Movie();
                 movie.setMovieID(data.getInt(FavMoviesContract.FavMoviesEntry.INDEX_MOVIEID));
                 movie.setPosterPath(data.getString(FavMoviesContract.FavMoviesEntry.INDEX_POSTERPATH));
@@ -257,7 +253,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
             }
         }
 
-        if (lstMovies.size()>0) {
+        if (lstMovies.size() > 0) {
             showMoviesDataView();
             mMoviesAdapter.setData(lstMovies);
         } else {
