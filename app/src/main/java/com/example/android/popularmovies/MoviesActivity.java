@@ -31,7 +31,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListener, OnAsyncMoviesLoadCompleted, LoaderManager.LoaderCallbacks<Cursor> {
+public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListener,
+        OnAsyncMoviesLoadCompleted, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = MoviesActivity.class.getSimpleName();
     private MoviesAdaptor mMoviesAdapter;

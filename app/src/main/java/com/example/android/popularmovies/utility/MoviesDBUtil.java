@@ -45,10 +45,11 @@ public class MoviesDBUtil {
 
     /**
      * To get movie details.
+     *
      * @param movieid Id of the movie we need the details for.
      * @return Object of the movie class.
      */
-    public static Movie getMovieDetails(int movieid,Context context){
+    public static Movie getMovieDetails(int movieid, Context context) {
         Movie movie;
         String jsonMovie;
         try {
@@ -65,9 +66,8 @@ public class MoviesDBUtil {
             URL url = new URL(uri.toString());
             jsonMovie = getResponseFromURL(url);
             movie = jsonToMovie(jsonMovie);
-        }
-        catch (IOException ex){
-            Log.e(TAG,ex.getMessage());
+        } catch (IOException ex) {
+            Log.e(TAG, ex.getMessage());
             throw new RuntimeException(ex);
         }
         return movie;
@@ -75,25 +75,24 @@ public class MoviesDBUtil {
 
     /**
      * Get all the movies.
+     *
      * @return Get popular movies list.
      */
     public static List<Movie> getPopularMovies(Context context) {
         String jsonMovies;
         List<Movie> lstMovies;
-        try
-        {
-        String apikey = ConfigUtil.getProperty(ConfigUtil.apikey, context);
-        String urlPopularMovies = ConfigUtil.getProperty(ConfigUtil.url_popular_movie, context);
+        try {
+            String apikey = ConfigUtil.getProperty(ConfigUtil.apikey, context);
+            String urlPopularMovies = ConfigUtil.getProperty(ConfigUtil.url_popular_movie, context);
 
-        Uri uri = Uri.parse(urlPopularMovies).buildUpon()
-                .appendQueryParameter(PARAM_APIKEY, apikey)
-                .build();
-        URL url = new URL(uri.toString());
-        jsonMovies = getResponseFromURL(url);
-        lstMovies = jsonToMoviesList(jsonMovies);
-        }
-        catch (IOException ex){
-            Log.e(TAG,ex.getMessage());
+            Uri uri = Uri.parse(urlPopularMovies).buildUpon()
+                    .appendQueryParameter(PARAM_APIKEY, apikey)
+                    .build();
+            URL url = new URL(uri.toString());
+            jsonMovies = getResponseFromURL(url);
+            lstMovies = jsonToMoviesList(jsonMovies);
+        } catch (IOException ex) {
+            Log.e(TAG, ex.getMessage());
             throw new RuntimeException(ex);
         }
         return lstMovies;
@@ -101,6 +100,7 @@ public class MoviesDBUtil {
 
     /**
      * Get Top Rated movies
+     *
      * @return List of top rated movies came as a result of API call.
      */
     public static List<Movie> getTopRatedMovies(Context context) {
@@ -118,9 +118,8 @@ public class MoviesDBUtil {
             URL url = new URL(uri.toString());
             jsonMovies = getResponseFromURL(url);
             lstMovies = jsonToMoviesList(jsonMovies);
-        }
-        catch (IOException ex){
-            Log.e(TAG,ex.getMessage());
+        } catch (IOException ex) {
+            Log.e(TAG, ex.getMessage());
             throw new RuntimeException(ex);
         }
         return lstMovies;
@@ -128,16 +127,16 @@ public class MoviesDBUtil {
 
     /**
      * Get full poster url by adding BaseURL + posterpath
+     *
      * @param posterPath relative path of the movie poster.
      * @return full path of the movie poster.
      */
-    public static String getPosterURL(String posterPath,Context context) {
+    public static String getPosterURL(String posterPath, Context context) {
         String urlImage;
         try {
-             urlImage = ConfigUtil.getProperty(ConfigUtil.url_base_image, context);
-        }
-        catch (IOException ex){
-            Log.e(TAG,ex.getMessage());
+            urlImage = ConfigUtil.getProperty(ConfigUtil.url_base_image, context);
+        } catch (IOException ex) {
+            Log.e(TAG, ex.getMessage());
             throw new RuntimeException(ex);
         }
         return urlImage + posterPath;
@@ -147,13 +146,15 @@ public class MoviesDBUtil {
 
     /**
      * Convert json data to the list of movies using Gson.
+     *
      * @param jsondata Json string came as a APIs response.
      */
-    private static List<Movie> jsonToMoviesList(String jsondata){
-        Log.i(TAG,jsondata);
+    private static List<Movie> jsonToMoviesList(String jsondata) {
+        Log.i(TAG, jsondata);
         List<Movie> lstMovies;
         Gson gson = new Gson();
-        Type listType = new TypeToken<List<Movie>>(){}.getType();
+        Type listType = new TypeToken<List<Movie>>() {
+        }.getType();
         JsonElement jelement = new JsonParser().parse(jsondata);
         JsonObject jobject = jelement.getAsJsonObject();
         JsonArray array = jobject.getAsJsonArray("results");
@@ -163,31 +164,34 @@ public class MoviesDBUtil {
 
     /**
      * Convert jsondata to Movie object.
+     *
      * @param jsondata Json string came as a APIs response.
      * @return Movie object converted from jsondata.
      */
-    private static Movie jsonToMovie(String jsondata){
-        Log.i(TAG,jsondata);
+    private static Movie jsonToMovie(String jsondata) {
+        Log.i(TAG, jsondata);
         Gson gson = new Gson();
         Movie movie;
         List<Review> lstReview;
         List<Video> lstVideo;
 
-        movie = gson.fromJson(jsondata,Movie.class);
+        movie = gson.fromJson(jsondata, Movie.class);
         JsonElement jelement = new JsonParser().parse(jsondata);
         JsonObject jobject = jelement.getAsJsonObject();
 
         //Fetch Reviews
-        Type listReviewType = new TypeToken<List<Review>>(){}.getType();
+        Type listReviewType = new TypeToken<List<Review>>() {
+        }.getType();
         JsonObject reviewObject = jobject.getAsJsonObject("reviews");
         JsonArray resultArray1 = reviewObject.getAsJsonArray("results");
-        lstReview = gson.fromJson(resultArray1,listReviewType);
+        lstReview = gson.fromJson(resultArray1, listReviewType);
 
         //Fetch Videos
-        Type listVideoType = new TypeToken<List<Video>>(){}.getType();
+        Type listVideoType = new TypeToken<List<Video>>() {
+        }.getType();
         JsonObject movieObject = jobject.getAsJsonObject("videos");
         JsonArray resultArray2 = movieObject.getAsJsonArray("results");
-        lstVideo = gson.fromJson(resultArray2,listVideoType);
+        lstVideo = gson.fromJson(resultArray2, listVideoType);
 
         movie.setLstReview(lstReview);
         movie.setLstVideo(lstVideo);
@@ -196,10 +200,11 @@ public class MoviesDBUtil {
 
     /**
      * Get Response from url in JSON.
+     *
      * @param url API url
      * @return response of the API call
      */
-    private static String getResponseFromURL(URL url)  {
+    private static String getResponseFromURL(URL url) {
         String response;
         HttpsURLConnection connection = null;
         InputStream is;
@@ -215,11 +220,10 @@ public class MoviesDBUtil {
             } else {
                 return null;
             }
-        }catch (IOException ex){
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
-        }
-        finally{
-            if(connection != null){
+        } finally {
+            if (connection != null) {
                 connection.disconnect();
             }
         }

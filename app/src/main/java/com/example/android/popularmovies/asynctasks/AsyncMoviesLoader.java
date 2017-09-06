@@ -12,12 +12,12 @@ import java.util.List;
 /**
  * Class to load movies Asynchronously ,Without blocking UI Thread.
  */
- public class AsyncMoviesLoader extends AsyncTask<String,Void,List<Movie>> {
+public class AsyncMoviesLoader extends AsyncTask<String, Void, List<Movie>> {
 
     private final OnAsyncMoviesLoadCompleted onAsyncMoviesLoadCompleted;
-    private final Context context ;
+    private final Context context;
 
-    public  AsyncMoviesLoader(Context context, OnAsyncMoviesLoadCompleted onAsyncMoviesLoadCompleted){
+    public AsyncMoviesLoader(Context context, OnAsyncMoviesLoadCompleted onAsyncMoviesLoadCompleted) {
         this.context = context;
         this.onAsyncMoviesLoadCompleted = onAsyncMoviesLoadCompleted;
     }
@@ -29,12 +29,12 @@ import java.util.List;
     }
 
     @Override
-    protected List<Movie> doInBackground(String... params)  {
+    protected List<Movie> doInBackground(String... params) {
         if (params.length == 0) {
             return null;
         }
         List<Movie> lstMovies;
-        switch (params[0]){
+        switch (params[0]) {
             case MoviesDBUtil.POPULAR:
                 lstMovies = MoviesDBUtil.getPopularMovies(context);
                 break;

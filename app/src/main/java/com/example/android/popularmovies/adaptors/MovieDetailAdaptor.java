@@ -30,10 +30,11 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
     private static final int VIEW_REVIEW = 2;
     private int reviewno = 0;
 
-    public MovieDetailAdaptor(Context context,MovieDetailAdaptor.PlayButtonClickListener playButtonClickListener ) {
+    public MovieDetailAdaptor(Context context, MovieDetailAdaptor.PlayButtonClickListener playButtonClickListener) {
         this.context = context;
         this.mPlayButtonClickListener = playButtonClickListener;
     }
+
     /**
      * Cache of the children views for a movies list item.
      */
@@ -45,23 +46,26 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
         @BindView(R.id.tvTrailer)
         TextView tvTrailer;
         @Nullable
-        @BindView(R.id.tvReview)TextView tvReview;
+        @BindView(R.id.tvReview)
+        TextView tvReview;
+
         public TrailerViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         /**
          * Bind data and events to view holder controls
+         *
          * @param position
          * @param viewId
          */
-        private void bind(final int position,int viewId){
+        private void bind(final int position, int viewId) {
             int TrailerNumber = position + 1; //Starts with 1 not 0
             String text = "Trailer " + Integer.toString(TrailerNumber);
 
-            switch (viewId){
-                case VIEW_TRAILER:{
+            switch (viewId) {
+                case VIEW_TRAILER: {
                     tvTrailer.setText(text);
                     imgPlayButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -71,8 +75,8 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
                     });
                     break;
                 }
-                case VIEW_REVIEW:{
-                    if(movie.getLstReview().size() > reviewno) {
+                case VIEW_REVIEW: {
+                    if (movie.getLstReview().size() > reviewno) {
                         tvReview.setText(movie.getLstReview().get(reviewno).getReviewContent());
                         reviewno = reviewno + 1;
                     }
@@ -85,34 +89,34 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
     @Override
     public MovieDetailAdaptor.TrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         int layoutid;
-        switch(viewType){
-            case VIEW_TRAILER:{
+        switch (viewType) {
+            case VIEW_TRAILER: {
                 layoutid = R.layout.movie_trailer;
                 break;
             }
-            case VIEW_REVIEW:{
+            case VIEW_REVIEW: {
                 layoutid = R.layout.movie_reviews;
                 break;
             }
-            default:{
+            default: {
                 throw new UnsupportedOperationException("View not supported");
             }
         }
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(layoutid,parent,false);
+        View view = layoutInflater.inflate(layoutid, parent, false);
         return new TrailerViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MovieDetailAdaptor.TrailerViewHolder holder, final int position) {
 
-        holder.bind(position,getItemViewType(position));
+        holder.bind(position, getItemViewType(position));
 
     }
 
     @Override
     public int getItemCount() {
-        if(movie == null){
+        if (movie == null) {
             return 0;
         }
         return movie.getLstVideo().size() + movie.getLstReview().size();
@@ -121,25 +125,25 @@ public class MovieDetailAdaptor extends RecyclerView.Adapter<MovieDetailAdaptor.
     /**
      * Event handler interface fro play button click
      */
-    public interface PlayButtonClickListener{
-         void onPlayButtonClick(Video video);
+    public interface PlayButtonClickListener {
+        void onPlayButtonClick(Video video);
     }
 
     /**
      * Pass data from Activity to adaptor.
+     *
      * @param movie
      */
-    public void setData(Movie movie){
+    public void setData(Movie movie) {
         this.movie = movie;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(position < movie.getLstVideo().size()){
+        if (position < movie.getLstVideo().size()) {
             return VIEW_TRAILER;
-        }
-        else{
+        } else {
             return VIEW_REVIEW;
         }
     }

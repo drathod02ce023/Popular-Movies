@@ -33,6 +33,9 @@
         android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"></com.example.android.popularmovies.views.StatefulRecyclerView>
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+    </com.example.android.popularmovies.views.StatefulRecyclerView>
+
 
 </android.support.constraint.ConstraintLayout>

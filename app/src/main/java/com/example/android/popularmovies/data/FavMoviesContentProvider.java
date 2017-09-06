@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 /**
  * Created by dhaval on 2017/08/31.
@@ -27,7 +26,6 @@ public class FavMoviesContentProvider extends ContentProvider {
     private FavMoviesDBHelper favMoviesDBHelper;
 
     /**
- *
      * @return
      */
     private static UriMatcher buildUriMatcher() {
@@ -70,9 +68,9 @@ public class FavMoviesContentProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor cursor;
         int uriCode = sUriMatcher.match(uri);
-        switch (uriCode){
+        switch (uriCode) {
             //return all the movies
-            case CODE_MOVIES:{
+            case CODE_MOVIES: {
                 cursor = favMoviesDBHelper.getReadableDatabase().query(
                         FavMoviesContract.FavMoviesEntry.TABLE_NAME,
                         projection,
@@ -85,7 +83,7 @@ public class FavMoviesContentProvider extends ContentProvider {
                 break;
             }
             //return one movie with specified movie id
-            case CODE_MOVIEID:{
+            case CODE_MOVIEID: {
                 cursor = favMoviesDBHelper.getReadableDatabase().query(
                         FavMoviesContract.FavMoviesEntry.TABLE_NAME,
                         projection,
@@ -96,7 +94,7 @@ public class FavMoviesContentProvider extends ContentProvider {
                         sortOrder);
                 break;
             }
-            default:{
+            default: {
                 throw new UnsupportedOperationException("Unknown URI" + uri);
             }
         }
@@ -115,19 +113,19 @@ public class FavMoviesContentProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         int uriCode = sUriMatcher.match(uri);
         long autorowid;
-        switch (uriCode){
+        switch (uriCode) {
             //return one movie with specified movie id
-            case CODE_MOVIEID:{
-                autorowid = favMoviesDBHelper.getWritableDatabase().insert(FavMoviesContract.FavMoviesEntry.TABLE_NAME,null,values);
+            case CODE_MOVIEID: {
+                autorowid = favMoviesDBHelper.getWritableDatabase().insert(FavMoviesContract.FavMoviesEntry.TABLE_NAME, null, values);
                 break;
             }
-            default:{
+            default: {
                 throw new UnsupportedOperationException("Unknown URI" + uri);
             }
         }
         if (autorowid > 0) {
             getContext().getContentResolver().notifyChange(uri, null);
-            Toast.makeText(getContext(),"Marked as favourite",Toast.LENGTH_LONG).show();
+            //Toast.makeText(getContext(),"Marked as favourite",Toast.LENGTH_LONG).show();
         }
         return uri;
     }
@@ -136,19 +134,19 @@ public class FavMoviesContentProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         int uriCode = sUriMatcher.match(uri);
         int numRowsDeleted;
-        switch (uriCode){
+        switch (uriCode) {/**/
             //return one movie with specified movie id
-            case CODE_MOVIEID:{
-                numRowsDeleted = favMoviesDBHelper.getWritableDatabase().delete(FavMoviesContract.FavMoviesEntry.TABLE_NAME,selection,selectionArgs);
+            case CODE_MOVIEID: {
+                numRowsDeleted = favMoviesDBHelper.getWritableDatabase().delete(FavMoviesContract.FavMoviesEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             }
-            default:{
+            default: {
                 throw new UnsupportedOperationException("Unknown URI" + uri);
             }
         }
         if (numRowsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
-            Toast.makeText(getContext(),"Marked as Unfavourite",Toast.LENGTH_LONG).show();
+            //Toast.makeText(getContext(),"Marked as Unfavourite",Toast.LENGTH_LONG).show();
         }
         return numRowsDeleted;
     }

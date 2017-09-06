@@ -13,9 +13,10 @@ import java.util.List;
 public class Movie implements Parcelable {
 
 
-    public Movie(){
+    public Movie() {
 
     }
+
     private Movie(Parcel in) {
         MovieID = in.readInt();
         RunTime = in.readInt();
@@ -113,7 +114,7 @@ public class Movie implements Parcelable {
 
     @Override
     public String toString() {
-        return "OriginalTitle : " +getOriginalTitle();
+        return "OriginalTitle : " + getOriginalTitle();
     }
 
     @Override

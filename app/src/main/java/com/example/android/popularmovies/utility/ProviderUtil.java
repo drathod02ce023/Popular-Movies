@@ -12,25 +12,23 @@ import android.net.Uri;
 public class ProviderUtil {
 
     /**
-     *
      * @param context
      * @param uri
      * @param cv
      * @return
      */
-    public static Uri insert(Context context, Uri uri, ContentValues cv){
-        return context.getContentResolver().insert(uri,cv);
+    public static Uri insert(Context context, Uri uri, ContentValues cv) {
+        return context.getContentResolver().insert(uri, cv);
     }
 
     /**
-     *
      * @param context
      * @param uri
      * @param selection
      * @param selectionArgs
      * @return
      */
-    public static int delete(Context context,Uri uri,String selection, String[] selectionArgs){
-        return context.getContentResolver().delete(uri,selection,selectionArgs);
+    public static int delete(Context context, Uri uri, String selection, String[] selectionArgs) {
+        return context.getContentResolver().delete(uri, selection, selectionArgs);
     }
 }

@@ -7,12 +7,12 @@ import com.example.android.popularmovies.interfaces.OnAsyncDetailsLoadCompleted;
 import com.example.android.popularmovies.models.Movie;
 import com.example.android.popularmovies.utility.MoviesDBUtil;
 
-public class AsyncMovieDetailsLoader extends AsyncTask<String,Void,Movie>{
+public class AsyncMovieDetailsLoader extends AsyncTask<String, Void, Movie> {
 
     private final OnAsyncDetailsLoadCompleted onAsyncDetailsLoadCompleted;
-    private final Context context ;
+    private final Context context;
 
-    public  AsyncMovieDetailsLoader(Context context, OnAsyncDetailsLoadCompleted onAsyncDetailsLoadCompleted){
+    public AsyncMovieDetailsLoader(Context context, OnAsyncDetailsLoadCompleted onAsyncDetailsLoadCompleted) {
         this.context = context;
         this.onAsyncDetailsLoadCompleted = onAsyncDetailsLoadCompleted;
     }
@@ -30,7 +30,7 @@ public class AsyncMovieDetailsLoader extends AsyncTask<String,Void,Movie>{
         }
         Movie movie;
         String movieid = params[0];
-        movie = MoviesDBUtil.getMovieDetails(Integer.valueOf(movieid),context);
+        movie = MoviesDBUtil.getMovieDetails(Integer.valueOf(movieid), context);
         return movie;
     }
 

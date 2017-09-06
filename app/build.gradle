@@ -15,6 +15,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "MY_API_KEY", getMyApiKey("apikey")
+        }
+        debug{
+            buildConfigField "String", "MY_API_KEY", getMyApiKey("apikey")
         }
     }
     return void
@@ -23,6 +27,12 @@ repositories {
     mavenCentral()
 }
 
+//Build Config methods
+def getMyApiKey(String property){
+    Properties properties = new Properties()
+    properties.load(new FileInputStream("/Users/dhaval/Desktop/Nenodegree/apikey/myApiKey"))
+    return "\"" + properties.getProperty(property) +"\""
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

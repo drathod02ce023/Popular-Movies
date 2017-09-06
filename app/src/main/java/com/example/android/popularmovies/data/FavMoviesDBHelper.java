@@ -3,6 +3,7 @@ package com.example.android.popularmovies.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import com.example.android.popularmovies.data.FavMoviesContract.FavMoviesEntry;
 
 /**
@@ -10,7 +11,7 @@ import com.example.android.popularmovies.data.FavMoviesContract.FavMoviesEntry;
  * Database Helper class.
  */
 
- class FavMoviesDBHelper extends SQLiteOpenHelper {
+class FavMoviesDBHelper extends SQLiteOpenHelper {
     /*
       * This is the name of our database. Database names should be descriptive and end with the
       * .db extension.
@@ -37,19 +38,19 @@ import com.example.android.popularmovies.data.FavMoviesContract.FavMoviesEntry;
 
                 "CREATE TABLE " + FavMoviesEntry.TABLE_NAME + " (" +
 
-                        FavMoviesEntry._ID               + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        FavMoviesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
-                        FavMoviesEntry.COL_MOVIEID       + " INTEGER NOT NULL, "                 +
+                        FavMoviesEntry.COL_MOVIEID + " INTEGER NOT NULL, " +
 
-                        FavMoviesEntry.COL_PLOTSYNOPSIS + " TEXT NOT NULL,"                  +
+                        FavMoviesEntry.COL_PLOTSYNOPSIS + " TEXT NOT NULL," +
 
-                        FavMoviesEntry.COL_RELEASEDATE + " TEXT NOT NULL,"                  +
-                        FavMoviesEntry.COL_RUNTIME + " INTEGER NOT NULL,"                  +
-                        FavMoviesEntry.COL_TITLE + " TEXT NOT NULL,"                  +
-                        FavMoviesEntry.COL_USERRATINGS + " TEXT NOT NULL,"                  +
-                        FavMoviesEntry.COL_POSTERPATH + " TEXT NOT NULL,"                  +
-                        FavMoviesEntry.COL_POSTER + " BLOB NOT NULL"                  +
-                ");";
+                        FavMoviesEntry.COL_RELEASEDATE + " TEXT NOT NULL," +
+                        FavMoviesEntry.COL_RUNTIME + " INTEGER NOT NULL," +
+                        FavMoviesEntry.COL_TITLE + " TEXT NOT NULL," +
+                        FavMoviesEntry.COL_USERRATINGS + " TEXT NOT NULL," +
+                        FavMoviesEntry.COL_POSTERPATH + " TEXT NOT NULL," +
+                        FavMoviesEntry.COL_POSTER + " BLOB NOT NULL" +
+                        ");";
 
 
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE);
@@ -69,6 +70,7 @@ import com.example.android.popularmovies.data.FavMoviesContract.FavMoviesEntry;
      */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        //Do not drop table , alter it.
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavMoviesEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }

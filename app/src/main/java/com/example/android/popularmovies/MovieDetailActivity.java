@@ -7,6 +7,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -35,7 +37,8 @@ import butterknife.ButterKnife;
 
 import static com.example.android.popularmovies.R.id.btnFavUnFav;
 
-public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDetailsLoadCompleted, LoaderManager.LoaderCallbacks<Cursor>, MovieDetailAdaptor.PlayButtonClickListener {
+public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDetailsLoadCompleted,
+        LoaderManager.LoaderCallbacks<Cursor>, MovieDetailAdaptor.PlayButtonClickListener {
     private static final String TAG = MovieDetailActivity.class.getSimpleName();
     private ProgressBar mLoadingIndicator;
     private static final int ID_CURSORLOADER_FAVMOVIES2 = 3018;
@@ -43,6 +46,8 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
     private MovieDetailAdaptor movieDetailAdaptor;
     LinearLayoutManager mRecViewLayoutManager;
 
+    @BindView(R.id.detailCordinator)
+    CoordinatorLayout cordinatorLayout;
     @BindView(btnFavUnFav)
     ToggleButton mtbFavUnFav;
     @BindView(R.id.rcvTrailers)
@@ -208,7 +213,16 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         cv.put(FavMoviesContract.FavMoviesEntry.COL_POSTERPATH, movieDetail.getPosterPath());
         //Insert favourite movie detail to favMovie database using ContentResolver.
         ProviderUtil.insert(getApplicationContext(), FavMoviesContract.FavMoviesEntry.buildUriWithMovieId(movieDetail.getMovieID()), cv);
-
+        Snackbar snackbar = Snackbar.make(cordinatorLayout, "Movie marked as Favorite.", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        markMovieUnFavourite();
+                        Snackbar snackbar1 = Snackbar.make(cordinatorLayout, "Movie marked as UnFavorite.", Snackbar.LENGTH_LONG);
+                        snackbar1.show();
+                    }
+                });
+        snackbar.show();
     }
 
     /**
@@ -219,6 +233,16 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         String selection = FavMoviesContract.FavMoviesEntry.COL_MOVIEID + " = ?";
         String[] selectionArgs = new String[]{Integer.toString(movieDetail.getMovieID())};
         ProviderUtil.delete(getApplicationContext(), uri, selection, selectionArgs);
+        Snackbar snackbar = Snackbar.make(cordinatorLayout, "Movie marked as UnFavorite.", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        markMovieFavourite();
+                        Snackbar snackbar1 = Snackbar.make(cordinatorLayout, "Movie marked as Favorite.", Snackbar.LENGTH_LONG);
+                        snackbar1.show();
+                    }
+                });
+        snackbar.show();
     }
 
     //Cursor Loader to check if movie is in the favorite list.

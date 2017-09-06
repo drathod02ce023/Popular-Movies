@@ -11,7 +11,7 @@ import java.io.ByteArrayOutputStream;
 
 public class ImageUtil {
 
-    public static byte[] getByteArrayFromImage(Bitmap bitmap){
+    public static byte[] getByteArrayFromImage(Bitmap bitmap) {
         byte[] image;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
