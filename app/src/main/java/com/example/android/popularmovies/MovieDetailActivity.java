@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -68,6 +69,8 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
     TextView txtViewDuration;
     @BindView(R.id.imgPosterDetail)
     ImageView imgViewMoviePoster;
+    @BindView(R.id.fabShareUrl)
+    FloatingActionButton fabShareUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,7 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
 
         movieDetailAdaptor = new MovieDetailAdaptor(this, this);
         mrcvTrailers.setAdapter(movieDetailAdaptor);
+        //Moive favorite/Unfavorite
         mtbFavUnFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,6 +103,13 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
             }
         });
 
+        //Share URL
+        fabShareUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareTrailorUrl();
+            }
+        });
         //Load Movie Detail Information
         LoadMovieDetail(getIntent());
     }
@@ -307,6 +318,19 @@ public class MovieDetailActivity extends AppCompatActivity implements OnAsyncDet
         }
         intent.putExtra("VIDEO_ID", videoId);
         startActivity(intent);
+    }
+
+    /**
+     * Share youtube URL
+     */
+    private void shareTrailorUrl(){
+        String videoId = "twZggnNbFqo";
+        String shareBody = "https://www.youtube.com/watch?v=" + videoId;
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Movie Trailer");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sharingIntent, "Share Youtube Trailer"));
     }
 
     /**
