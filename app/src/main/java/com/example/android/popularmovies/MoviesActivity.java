@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -30,16 +29,15 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.MovieOnClickListener,
         OnAsyncMoviesLoadCompleted, LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String TAG = MoviesActivity.class.getSimpleName();
     private MoviesAdaptor mMoviesAdapter;
     private ProgressBar mLoadingIndicator;
     private static final int ID_CURSORLOADER_FAVMOVIES = 3017;
-    private static int currentSortId = R.id.sortPopular;
-    private Parcelable state;
+    private static int mCurrentSortId = R.id.sortPopular;
 
     //BindViews
     @BindView(R.id.recyclerview_movies)
@@ -55,6 +53,9 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         //To use @BindView and other annotations.
         ButterKnife.bind(this);
         int numberOfGridColumns;
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
 
         /**
          * This value decides how many columns should be displayed in the RecyclerView's Grid.
@@ -88,10 +89,16 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
          */
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-        loadMovies(currentSortId);
+        //Init Load
+        loadMovies(mCurrentSortId);
     }
 
 
+    /**
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //Load Setting menu
@@ -99,26 +106,34 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         return true;
     }
 
+    /**
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        currentSortId = item.getItemId();
-        loadMovies(currentSortId);
+        mCurrentSortId = item.getItemId();
+        loadMovies(mCurrentSortId);
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     * @param id
+     * @param id : decide catagory of movies to be loaded. (Popular, HighRated And Favorite).
      */
     private void loadMovies(int id) {
         switch (id) {
             case R.id.sortPopular:
                 loadPopularMovies();
+                Timber.d("loading popular movies");
                 break;
             case R.id.sortRating:
                 loadTopRatedMovies();
+                Timber.d("loading highest rated movies");
                 break;
             case R.id.sortFavourite:
                 loadFavouriteMovies();
+                Timber.d("loading favourite movies");
                 break;
             default:
                 throw new UnsupportedOperationException("Sorting is not defind.");
@@ -177,15 +192,15 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         mErrorMessageDisplay.setText(errMsg);
     }
 
+    /**
+     * Start detail activity and pass movie object.
+     * @param movie
+     */
     @Override
     public void onMovieClickEvent(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putInt("id", movie.getMovieID());
-//        intent.putExtras(bundle);
         intent.putExtra("movie", movie);
         startActivity(intent);
-
     }
 
     //Before Movies Loading Starts
@@ -208,9 +223,10 @@ public class MoviesActivity extends AppCompatActivity implements MoviesAdaptor.M
         }
     }
 
-    //Cursor Loader to get favourite movies from database.
+
 
     /**
+     * Cursor Loader to get favourite movies from database.
      * @param loaderId
      * @param args
      * @return
